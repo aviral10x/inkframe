@@ -8,11 +8,11 @@ export default function Layout() {
 
   const navLinks = [
     { name: 'WORK', path: '/', external: false },
-    { name: 'ABOUT', path: '/about', external: false },
+    { name: 'STUDIO', path: '/about', external: false },
     { name: 'SERVICES', path: '/services', external: false },
     { name: 'REEL', path: '/reel', external: false },
     { name: 'CONTACT', path: '/contact', external: false },
-    { name: 'X', path: 'https://x.com/aviral10x', external: true },
+    { name: 'AURA', path: 'https://www.instagram.com/aurakidzzz/', external: true },
   ];
 
   function closeMenu() { setMenuOpen(false); }
@@ -21,12 +21,11 @@ export default function Layout() {
     <div className="page-container">
       <div className="film-grain"></div>
 
-      {/* Glassmorphism Navbar */}
-      <header
-        className="glass-panel nav-header"
-      >
+        <header
+          className="glass-panel nav-header"
+        >
         <div className="nav-logo">
-          <Link to="/" onClick={closeMenu}>AVIRAL</Link>
+          <Link to="/" onClick={closeMenu}>INKFRAME FILMS</Link>
         </div>
 
         {/* Desktop nav */}
