@@ -364,6 +364,20 @@ a {
   margin-top: 3rem;
 }
 
+.hover-instruction {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 4rem;
+  opacity: 0.42;
+}
+
+.hover-instruction div {
+  width: 40px;
+  height: 1px;
+  background: var(--text-offwhite);
+}
+
 .hero-proof-panel {
   border: 1px solid var(--ghost-border);
   background: linear-gradient(160deg, rgba(42, 42, 44, 0.8), rgba(8, 8, 10, 0.9));
@@ -499,6 +513,252 @@ a {
   line-height: 1.12;
   margin: 0.5rem 0 1rem;
   letter-spacing: 0;
+}
+
+.anthology-stack,
+.reel-video-library {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hover-video-card {
+  position: relative;
+  min-height: 460px;
+  background: var(--surface-lowest);
+  border: 1px solid var(--ghost-border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.6s ease;
+}
+
+.hover-video-card-wide {
+  min-height: 540px;
+}
+
+.hover-video-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.7s ease, opacity 0.7s ease;
+}
+
+.hover-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: opacity 0.6s ease;
+}
+
+.hover-video-tag {
+  position: absolute;
+  z-index: 3;
+  top: 2rem;
+  left: 2rem;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.hover-video-tag span {
+  border-bottom: 1px solid;
+  padding-bottom: 2px;
+}
+
+.hover-video-mute {
+  position: absolute;
+  z-index: 5;
+  top: 1.8rem;
+  right: 2rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid;
+  color: var(--primary-amber);
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.hover-video-copy {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.hover-video-copy h3 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+}
+
+.hover-video-copy p {
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: rgba(232, 228, 220, 0.58);
+  text-transform: uppercase;
+}
+
+.hover-video-copy > span {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  opacity: 0.78;
+}
+
+.hover-video-play {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 54px;
+  height: 54px;
+  margin: auto;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.hover-video-play span {
+  width: 0;
+  height: 0;
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  border-left: 17px solid var(--primary-amber);
+  margin-left: 4px;
+}
+
+.hover-video-expand {
+  position: absolute;
+  z-index: 5;
+  right: 2rem;
+  bottom: 1.5rem;
+  pointer-events: none;
+  font-size: 0.62rem;
+}
+
+.hover-video-index {
+  position: absolute;
+  z-index: 4;
+  top: 2rem;
+  right: 2rem;
+  color: rgba(232, 228, 220, 0.36);
+  pointer-events: none;
+}
+
+.video-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-modal-shell {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  background: #000;
+  overflow: hidden;
+}
+
+.video-modal-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.video-modal-topbar,
+.video-modal-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  pointer-events: none;
+}
+
+.video-modal-topbar {
+  top: 0;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.78), transparent);
+}
+
+.video-modal-topbar h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-top: 0.2rem;
+}
+
+.video-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  pointer-events: auto;
+}
+
+.video-modal-actions button,
+.video-modal-actions a {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.74);
+  min-height: 36px;
+  padding: 0.45rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.video-modal-bottom {
+  bottom: 0;
+  align-items: flex-end;
+  padding: 2rem 2.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+}
+
+.video-modal-bottom p {
+  max-width: 520px;
+  color: rgba(232, 228, 220, 0.68);
+  line-height: 1.65;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.video-modal-bottom div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: rgba(232, 228, 220, 0.48);
 }
 
 .drive-frame {
@@ -901,6 +1161,59 @@ a {
   .work-card-wide .work-media-shell,
   .work-card-tall .work-media-shell {
     min-height: 360px;
+  }
+
+  .hover-instruction {
+    margin-top: 2.5rem;
+  }
+
+  .hover-video-card,
+  .hover-video-card-wide {
+    min-height: 420px;
+  }
+
+  .hover-video-copy {
+    padding: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hover-video-copy h3 {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+
+  .hover-video-tag {
+    top: 1.25rem;
+    left: 1.25rem;
+  }
+
+  .hover-video-index {
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .hover-video-mute,
+  .hover-video-expand {
+    display: none;
+  }
+
+  .video-modal-topbar,
+  .video-modal-bottom {
+    padding: 1rem 1.25rem;
+  }
+
+  .video-modal-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .video-modal-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .video-modal-bottom div {
+    align-items: flex-start;
   }
 
   .statement-grid,
