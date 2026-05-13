@@ -4,6 +4,14 @@ export const driveThumbnail = (id: string) => `https://drive.google.com/thumbnai
 export const driveDownload = (id: string) => `https://drive.google.com/uc?export=download&id=${id}`;
 export const driveVideoProxy = (id: string) => `/api/drive-video?id=${id}`;
 
+const previewVideos = {
+  beautyCommercial: 'https://res.cloudinary.com/dxayta2us/video/upload/v1774291729/xtool/chanel-ad.mp4',
+  fragranceFilm: 'https://res.cloudinary.com/dxayta2us/video/upload/v1774291740/xtool/chanel.mp4',
+  ferrari: 'https://res.cloudinary.com/dxayta2us/video/upload/v1774291743/xtool/ferrari.mp4',
+  mercedes: 'https://res.cloudinary.com/dxayta2us/video/upload/v1774291747/xtool/mercedes.mp4',
+  theft: 'https://res.cloudinary.com/dxayta2us/video/upload/v1774291754/xtool/theft.mp4',
+} as const;
+
 export const proofOfWork = [
   {
     id: 'showreel',
@@ -14,6 +22,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'SHOWREEL',
     driveId: '1iCZBzE5uQvjKgl2JFIpc6k5Nu1C34mVa',
+    previewSrc: previewVideos.beautyCommercial,
     description: 'A compact overview reel for introducing InkFrame Films in outbound messages and pitch calls.',
     accent: '#D4A03C',
     size: 'wide',
@@ -27,6 +36,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'FASHION FILM',
     driveId: '1XEkjR0wybxPfdHcvR0eRpYEwKRI75O40',
+    previewSrc: previewVideos.fragranceFilm,
     description: 'Premium editorial campaign visual for luxury fashion and designer retail outreach.',
     accent: '#E6D7C3',
     size: 'tall',
@@ -40,6 +50,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'BEAUTY CAMPAIGN',
     driveId: '13e1DpsZ6nzmLhXnEevjoEzivj9aLDV-s',
+    previewSrc: previewVideos.beautyCommercial,
     description: 'Beauty/about-film style piece for cosmetics, skincare, and personal-care brands.',
     accent: '#F0A7B7',
     size: 'tall',
@@ -53,6 +64,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'BRAND FILM',
     driveId: '1DV0mqQfHvjdxA6S14lms9817eKqU48vS',
+    previewSrc: previewVideos.fragranceFilm,
     description: 'Cinematic product-led storytelling for refined digital campaigns.',
     accent: '#8AB7B4',
     size: 'wide',
@@ -66,6 +78,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'VISUAL EXPERIMENT',
     driveId: '1h8zGYzt2N9DzDW5dLpI9ln4P-NngirpW',
+    previewSrc: previewVideos.mercedes,
     description: 'Creative direction, atmosphere, and AI-led visual worldbuilding in an experimental frame.',
     accent: '#8CA6D9',
     size: 'standard',
@@ -79,6 +92,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'AI CONCEPT',
     driveId: '1U-_khWbcj4-ZJprV5-R3h2xzAF6hpjEW',
+    previewSrc: previewVideos.beautyCommercial,
     description: 'AI visual experimentation, art direction, and cinematic object transformation.',
     accent: '#CDA6F7',
     size: 'standard',
@@ -92,6 +106,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'AUTOMOTIVE SPOT',
     driveId: '1Rh7zSdF-aWS2vy9_xbDBa1Jzy7dVfnOu',
+    previewSrc: previewVideos.ferrari,
     description: 'High-energy luxury, performance, and aspirational automotive storytelling.',
     accent: '#D62F2F',
     size: 'wide',
@@ -105,6 +120,7 @@ export const proofOfWork = [
     year: '2026',
     tag: 'SHORT CONCEPT',
     driveId: '1XbXK9TbBlVe_qazn4mphpMdHMM7M00GZ',
+    previewSrc: previewVideos.theft,
     description: 'Longer-form pacing, tension, and scene continuity for narrative/action concepts.',
     accent: '#5A8A8A',
     size: 'standard',

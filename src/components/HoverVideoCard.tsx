@@ -110,7 +110,6 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
 
 export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hoverActive, setHoverActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
@@ -123,29 +122,16 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
     }
   }
 
-  function ensureVideoSource() {
-    const video = videoRef.current;
-    if (!video) return null;
-    if (!video.src) {
-      video.src = driveVideoProxy(project.driveId);
-      video.load();
-    }
-    return video;
-  }
-
   function handleMouseEnter() {
     if (isTouchDevice) return;
-    setHoverActive(true);
-    const video = ensureVideoSource();
+    const video = videoRef.current;
     if (!video) return;
-    if (video.readyState >= 2) {
-      void attemptPlay(video);
-    }
+    setPlaying(true);
+    void attemptPlay(video);
   }
 
   function handleMouseLeave() {
     if (isTouchDevice) return;
-    setHoverActive(false);
     const video = videoRef.current;
     if (!video) return;
     video.pause();
@@ -168,6 +154,13 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
       onClick={() => onOpen(project)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onPointerEnter={handleMouseEnter}
+      onPointerLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
+      tabIndex={0}
+      role="button"
+      aria-label={`Play ${project.title}`}
       style={{
         boxShadow: playing
           ? `0 0 60px ${project.accent}24, 0 20px 60px rgba(0,0,0,0.7)`
@@ -180,16 +173,12 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
         className="hover-video-media"
         layoutId={`video-${project.id}`}
         ref={videoRef}
+        src={project.previewSrc}
         poster={driveThumbnail(project.driveId)}
         muted
         loop
         playsInline
-        preload="none"
-        onLoadedData={(event) => {
-          if (hoverActive) {
-            void attemptPlay(event.currentTarget);
-          }
-        }}
+        preload="auto"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         style={{
