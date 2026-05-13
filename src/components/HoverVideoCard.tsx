@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { driveThumbnail, driveVideoProxy, driveView, proofOfWork } from '../content/inkframe';
+import { driveVideoProxy, driveView, proofOfWork } from '../content/inkframe';
 
 type VideoProject = (typeof proofOfWork)[number];
 
@@ -71,7 +71,7 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
           layoutId={`video-${project.id}`}
           ref={videoRef}
           src={driveVideoProxy(project.driveId)}
-          poster={driveThumbnail(project.driveId)}
+          poster={project.posterSrc}
           loop
           playsInline
           controls
@@ -174,7 +174,7 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
         layoutId={`video-${project.id}`}
         ref={videoRef}
         src={project.previewSrc}
-        poster={driveThumbnail(project.driveId)}
+        poster={project.posterSrc}
         muted
         loop
         playsInline
