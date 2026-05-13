@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
-import { outreachCopy } from '../content/inkframe';
+import { contactEmail, enquiryGroups, outreachCopy } from '../content/inkframe';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', brand: '', project: '', message: '' });
@@ -12,7 +12,7 @@ export default function Contact() {
     const body = encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\nBrand: ${form.brand}\nProject type: ${form.project}\n\n${form.message}`,
     );
-    window.open(`mailto:aviral10x@gmail.com?subject=${subject}&body=${body}`);
+    window.open(`mailto:${contactEmail}?subject=${subject}&body=${body}`);
     setSent(true);
   }
 
@@ -45,6 +45,23 @@ export default function Contact() {
             </p>
           </AnimatedSection>
 
+          <AnimatedSection delay={0.28}>
+            <section className="enquiry-panel" aria-labelledby="enquiries-heading">
+              <p className="metadata">ENQUIRIES</p>
+              <h2 id="enquiries-heading">Who can reach out</h2>
+              <p>
+                For campaign films, AI product commercials, social video systems, pitch reels, and concept-led brand
+                visuals, email us directly at{' '}
+                <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+              </p>
+              <ul>
+                {enquiryGroups.map((group) => (
+                  <li key={group}>{group}</li>
+                ))}
+              </ul>
+            </section>
+          </AnimatedSection>
+
           <AnimatedSection delay={0.3}>
             <div className="outreach-card">
               <p className="metadata">OUTREACH COPY</p>
@@ -54,14 +71,20 @@ export default function Contact() {
         </div>
 
         <AnimatedSection delay={0.25}>
-          {sent ? (
-            <div className="sent-state">
-              <h2>Message prepared</h2>
-              <p>Your mail client should have opened with the brief details. We will shape the next step from there.</p>
-              <button type="button" onClick={() => setSent(false)}>Send another</button>
+          <div className="contact-action-stack">
+            <div className="direct-email-card">
+              <p className="metadata">ENQUIRIES EMAIL</p>
+              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="brief-form">
+
+            {sent ? (
+              <div className="sent-state">
+                <h2>Message prepared</h2>
+                <p>Your mail client should have opened with the brief details. We will shape the next step from there.</p>
+                <button type="button" onClick={() => setSent(false)}>Send another</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="brief-form">
               <div className="form-row">
                 <label>
                   <span className="metadata">Name</span>
@@ -129,8 +152,9 @@ export default function Contact() {
               </label>
 
               <button type="submit" className="btn-primary">Prepare email</button>
-            </form>
-          )}
+              </form>
+            )}
+          </div>
         </AnimatedSection>
       </div>
     </div>

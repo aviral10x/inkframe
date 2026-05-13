@@ -233,6 +233,15 @@ export const auraHighlights = [
   'Audience clustered around ages 25-44, with strongest concentration in Brazil, Turkey, Japan, India, and Argentina',
 ];
 
+export const contactEmail = 'aviral10x@gmail.com';
+
+export const enquiryGroups = [
+  'Fashion, beauty, skincare, and cosmetics brands planning launch films or campaign assets',
+  'Automotive, luxury, lifestyle, and consumer-product teams building concept spots or product worlds',
+  'Agencies, founders, and marketing teams that need fast AI video routes for pitches, ads, or social rollouts',
+  'Creators and Instagram-first pages looking for repeatable short-form video systems',
+];
+
 export const outreachCopy = `Hi [Name],
 
 We are InkFrame Films, an AI-first video agency creating cinematic ads, fashion films, product launches, and concept reels for brands that want premium visuals without traditional production timelines.

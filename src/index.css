@@ -1072,6 +1072,69 @@ a {
   max-width: 520px;
 }
 
+.enquiry-panel {
+  margin-top: 3rem;
+  border: 1px solid var(--ghost-border);
+  background: rgba(14, 14, 16, 0.62);
+  padding: 1.5rem;
+}
+
+.enquiry-panel h2 {
+  margin-top: 0.65rem;
+  font-size: clamp(1.7rem, 4vw, 2.8rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.enquiry-panel p {
+  margin-top: 1rem;
+  max-width: 540px;
+  color: rgba(232, 228, 220, 0.68);
+  line-height: 1.7;
+}
+
+.enquiry-panel a {
+  color: var(--primary-amber);
+  border-bottom: 1px solid rgba(212, 160, 60, 0.45);
+}
+
+.enquiry-panel ul {
+  margin-top: 1.5rem;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.enquiry-panel li {
+  color: rgba(232, 228, 220, 0.78);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+  line-height: 1.5;
+}
+
+.contact-action-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.direct-email-card {
+  border: 1px solid var(--ghost-border);
+  background: rgba(14, 14, 16, 0.72);
+  padding: 1.25rem 2rem;
+}
+
+.direct-email-card a {
+  display: inline-block;
+  margin-top: 0.55rem;
+  color: var(--primary-amber);
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
 .outreach-card {
   margin-top: 4rem;
   border: 1px solid var(--ghost-border);
