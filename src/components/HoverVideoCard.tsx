@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { driveDownload, driveThumbnail, driveView, proofOfWork } from '../content/inkframe';
+import { driveThumbnail, driveVideoProxy, driveView, proofOfWork } from '../content/inkframe';
 
 type VideoProject = (typeof proofOfWork)[number];
 
@@ -70,7 +70,7 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
         <motion.video
           layoutId={`video-${project.id}`}
           ref={videoRef}
-          src={driveDownload(project.driveId)}
+          src={driveVideoProxy(project.driveId)}
           poster={driveThumbnail(project.driveId)}
           loop
           playsInline
@@ -110,15 +110,24 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
 
 export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [hoverActive, setHoverActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+
+  async function attemptPlay(video: HTMLVideoElement) {
+    try {
+      await video.play();
+    } catch {
+      setPlaying(false);
+    }
+  }
 
   function ensureVideoSource() {
     const video = videoRef.current;
     if (!video) return null;
     if (!video.src) {
-      video.src = driveDownload(project.driveId);
+      video.src = driveVideoProxy(project.driveId);
       video.load();
     }
     return video;
@@ -126,14 +135,17 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
 
   function handleMouseEnter() {
     if (isTouchDevice) return;
+    setHoverActive(true);
     const video = ensureVideoSource();
     if (!video) return;
-    video.play().catch(() => {});
-    setPlaying(true);
+    if (video.readyState >= 2) {
+      void attemptPlay(video);
+    }
   }
 
   function handleMouseLeave() {
     if (isTouchDevice) return;
+    setHoverActive(false);
     const video = videoRef.current;
     if (!video) return;
     video.pause();
@@ -173,6 +185,13 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
         loop
         playsInline
         preload="none"
+        onLoadedData={(event) => {
+          if (hoverActive) {
+            void attemptPlay(event.currentTarget);
+          }
+        }}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
         style={{
           filter: playing ? 'none' : 'grayscale(62%)',
           opacity: playing ? 1 : 0.58,

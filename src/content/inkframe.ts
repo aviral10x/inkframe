@@ -2,6 +2,7 @@ export const drivePreview = (id: string) => `https://drive.google.com/file/d/${i
 export const driveView = (id: string) => `https://drive.google.com/file/d/${id}/view`;
 export const driveThumbnail = (id: string) => `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
 export const driveDownload = (id: string) => `https://drive.google.com/uc?export=download&id=${id}`;
+export const driveVideoProxy = (id: string) => `/api/drive-video?id=${id}`;
 
 export const proofOfWork = [
   {
