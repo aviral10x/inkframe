@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { driveVideoProxy, driveView, proofOfWork } from '../content/inkframe';
+import { drivePreview, driveView, proofOfWork } from '../content/inkframe';
 
 type VideoProject = (typeof proofOfWork)[number];
 
@@ -17,20 +17,8 @@ interface VideoModalProps {
 }
 
 export function VideoModal({ project, onClose }: VideoModalProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [muted, setMuted] = useState(false);
-
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    const video = videoRef.current;
-    if (video) {
-      video.muted = false;
-      video.play().catch(() => {
-        video.muted = true;
-        setMuted(true);
-        video.play().catch(() => {});
-      });
-    }
     return () => {
       document.body.style.overflow = '';
     };
@@ -43,14 +31,6 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
-
-  function toggleMute(event: React.MouseEvent) {
-    event.stopPropagation();
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setMuted(video.muted);
-  }
 
   return (
     <motion.div
@@ -67,14 +47,12 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
         onClick={(event) => event.stopPropagation()}
         transition={{ type: 'spring', stiffness: 280, damping: 30 }}
       >
-        <motion.video
+        <motion.iframe
           layoutId={`video-${project.id}`}
-          ref={videoRef}
-          src={driveVideoProxy(project.driveId)}
-          poster={project.posterSrc}
-          loop
-          playsInline
-          controls
+          src={drivePreview(project.driveId)}
+          title={`${project.title} full video`}
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+          allowFullScreen
           className="video-modal-media"
         />
 
@@ -84,9 +62,6 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
             <h3>{project.title}</h3>
           </div>
           <div className="video-modal-actions">
-            <button type="button" onClick={toggleMute}>
-              {muted ? 'SOUND OFF' : 'SOUND ON'}
-            </button>
             <a href={driveView(project.driveId)} target="_blank" rel="noopener noreferrer">
               SOURCE
             </a>
