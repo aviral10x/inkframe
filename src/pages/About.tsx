@@ -1,5 +1,5 @@
 import AnimatedSection from '../components/AnimatedSection';
-import { auraHighlights } from '../content/inkframe';
+import { auraHighlights, auraReport } from '../content/inkframe';
 
 const productionLoop = [
   'Concept and brand read',
@@ -63,7 +63,12 @@ export default function About() {
               <h2 className="section-title">Aura Kidzzz</h2>
               <p>
                 InkFrame Films produced the video content for Aura Kidzzz, an Instagram-first kids and family-facing
-                page built around playful short-form visuals and repeatable social content.
+                page built around playful short-form visuals and repeatable social content. The current performance
+                report shows that the page is no longer just a style sample. It behaves like a scaled social content
+                system with real audience growth, repeatable reach, and clear demographic traction.
+              </p>
+              <p className="aura-period">
+                Reporting period: {auraReport.reportingPeriod} ({auraReport.reportingWindow})
               </p>
               <a className="btn-secondary aura-link" href="https://www.instagram.com/aurakidzzz/" target="_blank" rel="noopener noreferrer">
                 View @aurakidzzz
@@ -71,12 +76,72 @@ export default function About() {
             </div>
             <div className="aura-facts">
               <p className="metadata">PUBLIC PROFILE SNAPSHOT</p>
-              <h3>Aura Kid · 19K followers · 42 posts</h3>
+              <h3>{auraReport.profileName} · {auraReport.followers} followers · {auraReport.totalPosts} posts</h3>
+              <div className="aura-metrics-grid">
+                <div>
+                  <span className="metadata">NEW FOLLOWERS</span>
+                  <strong>{auraReport.newFollowers}</strong>
+                  <p>{auraReport.followerGrowth} during the reporting window</p>
+                </div>
+                <div>
+                  <span className="metadata">TOTAL VIEWS</span>
+                  <strong>{auraReport.views}</strong>
+                  <p>Across the 90-day reporting period</p>
+                </div>
+                <div>
+                  <span className="metadata">AVERAGE POST REACH</span>
+                  <strong>{auraReport.averageReach}</strong>
+                  <p>{auraReport.averageLikes} likes and {auraReport.averageComments} comments on average</p>
+                </div>
+                <div>
+                  <span className="metadata">STORY PERFORMANCE</span>
+                  <strong>{auraReport.storyViews}</strong>
+                  <p>{auraReport.storyReach} average reach and {auraReport.storyReplies} replies</p>
+                </div>
+              </div>
               <ul>
                 {auraHighlights.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
+              <div className="aura-detail-grid">
+                <div>
+                  <p className="metadata">TOP COUNTRIES</p>
+                  <ul>
+                    {auraReport.topCountries.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="metadata">CORE AGE BANDS</p>
+                  <ul>
+                    {auraReport.audienceAge.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="metadata">AUDIENCE GENDER</p>
+                  <ul>
+                    {auraReport.audienceGender.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="aura-proof">
+                <p className="metadata">WHY THIS MATTERS</p>
+                <ul>
+                  {auraReport.topPostPerformance.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <p>
+                  Most active day in the report: {auraReport.mostActiveDay}. Followers-online reporting is in
+                  {` ${auraReport.timezone}`}, which gives us a timing signal for release planning and content cadence.
+                </p>
+              </div>
             </div>
           </div>
         </AnimatedSection>

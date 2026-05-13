@@ -932,9 +932,45 @@ a {
   margin-top: 2rem;
 }
 
+.aura-period {
+  margin-top: 1.25rem;
+  color: rgba(232, 228, 220, 0.62);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+}
+
 .aura-facts {
   border-left: 1px solid var(--ghost-border);
   padding-left: 2rem;
+}
+
+.aura-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin: 1.5rem 0 2rem;
+  background: var(--ghost-border);
+}
+
+.aura-metrics-grid > div {
+  background: rgba(14, 14, 16, 0.84);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.aura-metrics-grid strong {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  color: var(--text-pure);
+  line-height: 1;
+}
+
+.aura-metrics-grid p,
+.aura-proof p {
+  color: rgba(232, 228, 220, 0.62);
+  line-height: 1.6;
 }
 
 .aura-facts ul,
@@ -949,6 +985,24 @@ a {
 .service-row li {
   color: rgba(232, 228, 220, 0.62);
   line-height: 1.6;
+}
+
+.aura-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.aura-detail-grid > div {
+  border-top: 1px solid var(--ghost-border);
+  padding-top: 1rem;
+}
+
+.aura-proof {
+  margin-top: 2rem;
+  border-top: 1px solid var(--ghost-border);
+  padding-top: 1.25rem;
 }
 
 .service-list {
@@ -1256,6 +1310,11 @@ a {
     border-top: 1px solid var(--ghost-border);
     padding-left: 0;
     padding-top: 2rem;
+  }
+
+  .aura-metrics-grid,
+  .aura-detail-grid {
+    grid-template-columns: 1fr;
   }
 
   .reel-entry,

@@ -157,11 +157,56 @@ export const servicePillars = [
   },
 ];
 
+export const auraReport = {
+  reportingPeriod: 'February 12, 2026 - May 13, 2026',
+  reportingWindow: '90 days',
+  profileName: 'Aura Kid',
+  handle: '@aurakidzzz',
+  totalPosts: '62',
+  followers: '76,733',
+  newFollowers: '15,255',
+  followerGrowth: '+24%',
+  views: '112,945,046',
+  averageReach: '279,116.5',
+  averageLikes: '9,276.5',
+  averageComments: '39.5',
+  averageEngagement: '3.5%',
+  storyViews: '7,146',
+  storyReach: '5,969',
+  storyReplies: '14',
+  mostActiveDay: 'Tuesday, May 5, 2026',
+  timezone: 'Asia/Calcutta (GMT+5:30)',
+  topCountries: [
+    'Brazil 32%',
+    'Turkey 14%',
+    'Japan 9.1%',
+    'India 9.1%',
+    'Argentina 9.1%',
+  ],
+  audienceAge: [
+    '25-34: 36%',
+    '35-44: 36%',
+    '18-24: 14%',
+    '45-54: 9.1%',
+    '55-64: 4.5%',
+  ],
+  audienceGender: [
+    'Female 64%',
+    'Male 9.1%',
+    'Prefer not to say 27%',
+  ],
+  topPostPerformance: [
+    'Top post reached 2M with 99K likes and 267 comments',
+    'Another top post reached 1.8M with 148K likes and 8.4% engagement',
+    'Top story examples reached up to 10K views and 8.1K reach',
+  ],
+} as const;
+
 export const auraHighlights = [
-  '19K followers and 42 posts at the time of the portfolio update',
   'Complete short-form video content pipeline for an Instagram-native brand',
-  'Social-first edits designed for quick attention, repeat viewing, and mobile-first consumption',
-  'Consistent visual direction across multiple posts so the page feels cohesive rather than one-off',
+  '15,255 new followers and 112,945,046 views during the 90-day reporting period',
+  'Average post performance of 279,116.5 reach, 9,276.5 likes, and 3.5% engagement',
+  'Audience clustered around ages 25-44, with strongest concentration in Brazil, Turkey, Japan, India, and Argentina',
 ];
 
 export const outreachCopy = `Hi [Name],
