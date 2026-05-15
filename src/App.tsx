@@ -1,27 +1,25 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Reel from './pages/Reel';
-import Contact from './pages/Contact';
+import { useState } from 'react';
+import { LoadingScreen } from './sections/LoadingScreen';
+import { Hero } from './sections/Hero';
+import { SelectedWorks } from './sections/SelectedWorks';
+import { Journal } from './sections/Journal';
+import { Explorations } from './sections/Explorations';
+import { Contact } from './sections/Contact';
 
 function App() {
-  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="services" element={<Services />} />
-          <Route path="reel" element={<Reel />} />
-          <Route path="contact" element={<Contact />} />
-        </Route>
-      </Routes>
-    </AnimatePresence>
+    <>
+      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+      <main className={isLoading ? "h-screen overflow-hidden" : ""}>
+        <Hero />
+        <SelectedWorks />
+        <Journal />
+        <Explorations />
+        <Contact />
+      </main>
+    </>
   );
 }
 
