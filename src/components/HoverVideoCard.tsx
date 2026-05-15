@@ -182,17 +182,15 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         style={{
-          filter: playing ? 'none' : 'grayscale(62%)',
-          opacity: playing ? 1 : 0.58,
+          transform: playing ? 'scale(1.02)' : 'scale(1)',
         }}
       />
 
       <div
         className="hover-video-overlay"
         style={{
-          opacity: playing ? 0 : 1,
-          background: `linear-gradient(to top, rgba(8,8,10,0.97) 0%, rgba(8,8,10,0.35) 55%, transparent 100%),
-            linear-gradient(115deg, ${project.accent}22, transparent 42%)`,
+          opacity: playing ? 0.18 : 0.42,
+          background: 'linear-gradient(to top, rgba(8,8,10,0.72) 0%, rgba(8,8,10,0.16) 36%, transparent 58%)',
         }}
       />
 

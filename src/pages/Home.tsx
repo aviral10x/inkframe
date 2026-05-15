@@ -2,18 +2,43 @@ import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
 import { HoverVideoCard, VideoModal } from '../components/HoverVideoCard';
-import { bestFitClients, proofOfWork, services } from '../content/inkframe';
+import { bestFitClients, contactEmail, proofOfWork, servicePillars } from '../content/inkframe';
 
 type Project = (typeof proofOfWork)[number];
 
 export default function Home() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [leadForm, setLeadForm] = useState({ name: '', email: '' });
+  const [leadSent, setLeadSent] = useState(false);
+
+  const heroProject = proofOfWork[0];
+
+  function handleLeadSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const subject = encodeURIComponent(`InkFrame Films lead from ${leadForm.name}`);
+    const body = encodeURIComponent(
+      `Name: ${leadForm.name}\nEmail: ${leadForm.email}\nInterest: Hero-page lead form\n\nPlease reach out with next steps and relevant work samples.`,
+    );
+    window.open(`mailto:${contactEmail}?subject=${subject}&body=${body}`);
+    setLeadSent(true);
+  }
 
   return (
     <>
-      <div className="container home-page">
-        <section className="hero-grid ink-hero">
-          <div>
+      <section className="hero-stage">
+        <video
+          className="hero-stage-video"
+          src={heroProject.fullSrc}
+          poster={heroProject.posterSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        />
+        <div className="hero-stage-scrim" />
+        <div className="container hero-stage-inner">
+          <div className="hero-stage-copy">
             <AnimatedSection>
               <p className="metadata eyebrow">AI-FIRST VIDEO AGENCY</p>
               <h1 className="display-lg">INKFRAME FILMS</h1>
@@ -33,17 +58,63 @@ export default function Home() {
             </AnimatedSection>
 
             <AnimatedSection delay={0.5}>
-              <div className="hover-instruction">
-                <div />
-                <p className="metadata">HOVER TO PLAY · CLICK TO EXPAND</p>
+              <div className="hero-stage-meta">
+                <div className="hero-stage-tag">
+                  <span className="metadata">{heroProject.tag}</span>
+                  <strong>{heroProject.title}</strong>
+                </div>
+                <p className="metadata">DIRECT LEAD CAPTURE · CLICK ANY FILM TO EXPAND</p>
               </div>
             </AnimatedSection>
           </div>
 
           <AnimatedSection delay={0.25}>
-            <HoverVideoCard project={proofOfWork[0]} index={0} onOpen={setActiveProject} wide />
+            <aside className="hero-lead-card">
+              <p className="metadata">START HERE</p>
+              <h2>Get a film idea pack for your brand.</h2>
+              <p>
+                Leave your name and email. We will open the enquiry with your details so your team can start the brief fast.
+              </p>
+
+              {leadSent ? (
+                <div className="hero-lead-success">
+                  <strong>Lead draft ready.</strong>
+                  <p>Your mail app should have opened with your contact details prefilled.</p>
+                  <button type="button" className="btn-secondary" onClick={() => setLeadSent(false)}>
+                    Send another
+                  </button>
+                </div>
+              ) : (
+                <form className="hero-lead-form" onSubmit={handleLeadSubmit}>
+                  <label>
+                    <span className="metadata">Name</span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Your name"
+                      value={leadForm.name}
+                      onChange={(event) => setLeadForm((current) => ({ ...current, name: event.target.value }))}
+                    />
+                  </label>
+                  <label>
+                    <span className="metadata">Email</span>
+                    <input
+                      type="email"
+                      required
+                      placeholder="you@brand.com"
+                      value={leadForm.email}
+                      onChange={(event) => setLeadForm((current) => ({ ...current, email: event.target.value }))}
+                    />
+                  </label>
+                  <button type="submit" className="btn-primary">Get in touch</button>
+                </form>
+              )}
+            </aside>
           </AnimatedSection>
-        </section>
+        </div>
+      </section>
+
+      <div className="container home-page">
 
         <section className="section-band">
           <AnimatedSection>
@@ -64,18 +135,26 @@ export default function Home() {
             <div className="section-heading-row">
               <div>
                 <p className="metadata eyebrow">WHAT WE MAKE</p>
-                <h2 className="section-head">CAMPAIGN OUTPUTS</h2>
+                <h2 className="section-head">CAMPAIGN SYSTEMS</h2>
               </div>
-              <span className="metadata">WEB · SOCIAL · PITCH DECKS</span>
+              <span className="metadata">FILMS · ADS · SOCIAL · PITCH WORLDS</span>
             </div>
           </AnimatedSection>
 
-          <div className="service-chip-grid">
-            {services.map((service, index) => (
-              <AnimatedSection key={service} delay={index * 0.04}>
-                <div className="service-chip">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <p>{service}</p>
+          <div className="service-pillar-grid">
+            {servicePillars.map((service, index) => (
+              <AnimatedSection key={service.title} delay={index * 0.06}>
+                <div className="service-pillar-card">
+                  <div className="service-pillar-head">
+                    <span>{service.num}</span>
+                    <h3>{service.title}</h3>
+                  </div>
+                  <p>{service.desc}</p>
+                  <ul className="service-pill-list">
+                    {service.deliverables.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
                 </div>
               </AnimatedSection>
             ))}
