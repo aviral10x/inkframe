@@ -67,19 +67,6 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="w-px h-5 bg-[var(--color-stroke)] mx-3 hidden md:block" />
-
-        {/* CTA */}
-        <button 
-          onClick={() => scrollToSection('contact')}
-          className="relative group text-xs sm:text-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-[var(--color-text-primary)] overflow-hidden"
-        >
-          <span className="absolute inset-[-2px] accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-          <div className="absolute inset-0 bg-[var(--color-surface)] rounded-full backdrop-blur-md -z-10 transition-opacity group-hover:opacity-90" />
-          <span className="flex items-center gap-1">
-            Get in touch <span>↗</span>
-          </span>
-        </button>
       </div>
     </nav>
   );

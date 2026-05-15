@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { useHlsVideo } from '../hooks/useHlsVideo';
 import { Navbar } from './Navbar';
+import { useSmoothScroll } from '../hooks/useSmoothScroll';
 
 export function Hero() {
   const { videoRef } = useHlsVideo('https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8');
   const [roleIndex, setRoleIndex] = useState(0);
   const roles = ["Fashion Films", "AI Commercials", "Brand Campaigns", "Social Content"];
+  const { scrollToSection } = useSmoothScroll();
 
   useEffect(() => {
     const roleInterval = setInterval(() => {
@@ -62,9 +64,36 @@ export function Hero() {
           for brands.
         </div>
         
-        <p className="blur-in text-sm md:text-base text-[var(--color-muted)] max-w-md mb-12">
+        <p className="blur-in text-sm md:text-base text-[var(--color-muted)] max-w-md mb-8">
           AI video films for brands that need premium visuals, fast iteration, and scroll-stopping storytelling.
         </p>
+
+        <div className="blur-in flex items-center mt-2">
+          <button
+            id="hero-cta"
+            onClick={() => scrollToSection('contact')}
+            className="group relative flex items-center gap-0 rounded-full overflow-hidden border border-[var(--color-stroke)] hover:border-white/20 transition-all duration-500 bg-[var(--color-surface)]/60 backdrop-blur-md hover:bg-[var(--color-surface)] shadow-lg shadow-black/20"
+          >
+            {/* Accent gradient glow on hover */}
+            <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{ boxShadow: 'inset 0 0 0 1px rgba(137,170,204,0.3)' }} />
+
+            {/* Label */}
+            <span className="relative text-sm font-medium text-[var(--color-text-primary)]/80 group-hover:text-[var(--color-text-primary)] transition-colors duration-300 pl-6 pr-4 py-3.5 tracking-wide">
+              Get in touch
+            </span>
+
+            {/* Arrow circle */}
+            <span className="relative flex items-center justify-center w-10 h-10 mr-1 rounded-full bg-[var(--color-text-primary)]/10 group-hover:bg-[var(--color-text-primary)] transition-all duration-400">
+              <svg
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                className="text-[var(--color-text-primary)] group-hover:text-[var(--color-bg)] group-hover:rotate-45 transition-all duration-400"
+              >
+                <path d="M2 12L12 2M12 2H4.5M12 2V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Scroll Indicator */}
