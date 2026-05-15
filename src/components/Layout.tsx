@@ -19,8 +19,6 @@ export default function Layout() {
 
   return (
     <div className="page-container">
-      <div className="film-grain"></div>
-
         <header
           className="glass-panel nav-header"
         >

@@ -23,14 +23,20 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     const video = videoRef.current;
-    if (video) {
-      video.muted = false;
-      video.play().catch(() => {
+    async function startPlayback() {
+      if (!video) return;
+      video.load();
+      try {
+        video.muted = false;
+        await video.play();
+        setMuted(false);
+      } catch {
         video.muted = true;
         setMuted(true);
-        video.play().catch(() => {});
-      });
+        await video.play().catch(() => {});
+      }
     }
+    void startPlayback();
     return () => {
       document.body.style.overflow = '';
     };
@@ -63,19 +69,27 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
     >
       <motion.div
         className="video-modal-shell"
-        layoutId={`card-${project.id}`}
         onClick={(event) => event.stopPropagation()}
-        transition={{ type: 'spring', stiffness: 280, damping: 30 }}
       >
-        <motion.video
-          layoutId={`video-${project.id}`}
+        <video
+          key={project.fullSrc}
           ref={videoRef}
           src={project.fullSrc}
           poster={project.posterSrc}
+          autoPlay
+          muted={muted}
           loop
           playsInline
           preload="auto"
+          controls
+          controlsList="nodownload noplaybackrate"
           className="video-modal-media"
+          onLoadedData={() => {
+            const video = videoRef.current;
+            if (video?.paused) {
+              void video.play().catch(() => {});
+            }
+          }}
         />
 
         <div className="video-modal-topbar">
@@ -171,14 +185,13 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
     >
       <motion.video
         className="hover-video-media"
-        layoutId={`video-${project.id}`}
         ref={videoRef}
-        src={project.previewSrc}
+        src={project.fullSrc}
         poster={project.posterSrc}
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         style={{
@@ -189,8 +202,8 @@ export function HoverVideoCard({ project, index, onOpen, wide }: HoverVideoCardP
       <div
         className="hover-video-overlay"
         style={{
-          opacity: playing ? 0.18 : 0.42,
-          background: 'linear-gradient(to top, rgba(8,8,10,0.72) 0%, rgba(8,8,10,0.16) 36%, transparent 58%)',
+          opacity: playing ? 0 : 0.08,
+          background: 'linear-gradient(to top, rgba(8,8,10,0.36) 0%, rgba(8,8,10,0.04) 34%, transparent 56%)',
         }}
       />
 
