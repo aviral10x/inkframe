@@ -4,6 +4,7 @@ import { Journal } from './sections/Journal';
 import { Explorations } from './sections/Explorations';
 import { Contact } from './sections/Contact';
 import { FloatingCTA } from './sections/FloatingCTA';
+import { BackgroundAudio } from './sections/BackgroundAudio';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Contact />
       </main>
       <FloatingCTA />
+      <BackgroundAudio />
     </>
   );
 }
