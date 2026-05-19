@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Hls from 'hls.js';
 import { projects } from '../data/content';
-import { muxThumbnail, muxStream } from '../lib/mux';
+import { muxStream } from '../lib/mux';
 
 /* ─────────────────────────────────────────────────────────────
  * MuxVideo — lazily attaches hls.js on hover, cleans up on leave
@@ -164,7 +164,7 @@ function VideoModal({ project, onClose }: { project: ModalProject; onClose: () =
       >
         <video
           ref={videoRef}
-          poster={muxThumbnail(project.muxPlaybackId, project.image, 0)}
+          poster={project.image}
           muted={muted}
           loop
           playsInline
@@ -212,7 +212,7 @@ function VideoModal({ project, onClose }: { project: ModalProject; onClose: () =
 }
 
 /* ─────────────────────────────────────────────────────────────
- * HoverVideoCard — shows Mux poster, streams HLS on hover,
+ * HoverVideoCard — shows local poster, streams HLS on hover,
  * click-to-expand into modal. Exact feel of the original but
  * using adaptive bitrate streaming.
  * ───────────────────────────────────────────────────────────── */
@@ -269,9 +269,9 @@ function HoverVideoCard({
       onPointerEnter={handleEnter}
       onPointerLeave={handleLeave}
     >
-      {/* Poster thumbnail from Mux */}
+      {/* Local poster thumbnail */}
       <img
-        src={muxThumbnail(project.muxPlaybackId, project.image, 2, wide ? 1600 : 1200)}
+        src={project.image}
         alt={project.title}
         className="absolute inset-0 w-full h-full object-cover"
         style={{

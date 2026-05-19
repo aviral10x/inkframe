@@ -4,10 +4,11 @@ import { useHlsVideo } from '../hooks/useHlsVideo';
 import { Navbar } from './Navbar';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 
+const roles = ["Fashion Films", "AI Commercials", "Brand Campaigns", "Social Content"];
+
 export function Hero() {
   const { videoRef } = useHlsVideo('https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8');
   const [roleIndex, setRoleIndex] = useState(0);
-  const roles = ["Fashion Films", "AI Commercials", "Brand Campaigns", "Social Content"];
   const { scrollToSection } = useSmoothScroll();
 
   useEffect(() => {

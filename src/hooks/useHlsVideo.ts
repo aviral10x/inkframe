@@ -42,5 +42,5 @@ export function useHlsVideo(src: string) {
     }
   }, [src]);
 
-  return { videoRef, hlsInstance: hlsRef.current };
+  return { videoRef };
 }
