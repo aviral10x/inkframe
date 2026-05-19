@@ -1,71 +1,38 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Hls from 'hls.js';
 import { projects } from '../data/content';
-import { muxStream } from '../lib/mux';
 
 /* ─────────────────────────────────────────────────────────────
- * MuxVideo lazily attaches hls.js on hover, cleans up on leave
- * Falls back to native HLS on Safari. Graceful fallback to static
- * poster when no playbackId exists.
+ * LocalVideo lazily plays local MP4 previews on hover.
  * ───────────────────────────────────────────────────────────── */
-function useMuxPlayer(playbackId: string | null | undefined) {
+function useLocalVideoPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const play = useCallback(() => {
     const video = videoRef.current;
-    const src = muxStream(playbackId);
-    if (!video || !src) return;
+    if (!video) return;
 
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        startLevel: -1,
-        capLevelToPlayerSize: true,
-        maxBufferLength: 8,
-        maxMaxBufferLength: 15,
-      });
-      hls.loadSource(src);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {});
-      });
-      hlsRef.current = hls;
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = src;
-      video.play().catch(() => {});
-    }
-    setIsPlaying(true);
-  }, [playbackId]);
+    video.muted = true;
+    video.play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false));
+  }, []);
 
   const pause = useCallback(() => {
     const video = videoRef.current;
     if (video) {
       video.pause();
-      video.removeAttribute('src');
-      video.load();
-    }
-    if (hlsRef.current) {
-      hlsRef.current.destroy();
-      hlsRef.current = null;
+      video.currentTime = 0;
     }
     setIsPlaying(false);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-      }
-    };
   }, []);
 
   return { videoRef, isPlaying, play, pause };
 }
 
 /* ─────────────────────────────────────────────────────────────
- * VideoModal fullscreen Mux HLS player with sound toggle
+ * VideoModal fullscreen local MP4 player with sound toggle
  * ───────────────────────────────────────────────────────────── */
 interface ModalProject {
   title: string;
@@ -73,59 +40,37 @@ interface ModalProject {
   year: string;
   description: string;
   accent: string;
-  muxPlaybackId: string | null;
   image: string;
+  video: string;
 }
 
 function VideoModal({ project, onClose }: { project: ModalProject; onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     const video = videoRef.current;
-    const src = muxStream(project.muxPlaybackId);
-
-    if (!video || !src) return;
 
     async function startPlayback() {
       if (!video) return;
-      if (Hls.isSupported()) {
-        const hls = new Hls({ startLevel: -1 });
-        hls.loadSource(src!);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, async () => {
-          try {
-            video.muted = false;
-            await video.play();
-            setMuted(false);
-          } catch {
-            video.muted = true;
-            setMuted(true);
-            await video.play().catch(() => {});
-          }
-        });
-        hlsRef.current = hls;
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = src!;
-        try {
-          video.muted = false;
-          await video.play();
-        } catch {
-          video.muted = true;
-          await video.play().catch(() => {});
-          setMuted(true);
-        }
+      video.load();
+      try {
+        video.muted = false;
+        await video.play();
+        setMuted(false);
+      } catch {
+        video.muted = true;
+        setMuted(true);
+        await video.play().catch(() => {});
       }
     }
     void startPlayback();
 
     return () => {
       document.body.style.overflow = '';
-      if (hlsRef.current) hlsRef.current.destroy();
     };
-  }, [project.muxPlaybackId]);
+  }, [project.video]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -164,6 +109,7 @@ function VideoModal({ project, onClose }: { project: ModalProject; onClose: () =
       >
         <video
           ref={videoRef}
+          src={project.video}
           poster={project.image}
           muted={muted}
           loop
@@ -212,9 +158,8 @@ function VideoModal({ project, onClose }: { project: ModalProject; onClose: () =
 }
 
 /* ─────────────────────────────────────────────────────────────
- * HoverVideoCard shows local poster, streams HLS on hover,
- * click-to-expand into modal. Exact feel of the original but
- * using adaptive bitrate streaming.
+ * HoverVideoCard shows local poster, plays local MP4 preview on hover,
+ * click-to-expand into modal.
  * ───────────────────────────────────────────────────────────── */
 interface CardProject {
   id: string;
@@ -223,6 +168,8 @@ interface CardProject {
   year: string;
   description: string;
   image: string;
+  previewVideo: string;
+  video: string;
   accent: string;
   muxPlaybackId: string | null;
 }
@@ -238,7 +185,7 @@ function HoverVideoCard({
   wide?: boolean;
   onOpen: (p: CardProject) => void;
 }) {
-  const { videoRef, isPlaying, play, pause } = useMuxPlayer(project.muxPlaybackId);
+  const { videoRef, isPlaying, play, pause } = useLocalVideoPlayer();
   const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 
   function handleEnter() {
@@ -285,10 +232,12 @@ function HoverVideoCard({
       {/* Streaming HLS video */}
       <video
         ref={videoRef}
+        src={project.previewVideo}
+        poster={project.image}
         muted
         loop
         playsInline
-        preload="none"
+        preload="metadata"
         className="absolute inset-0 w-full h-full object-cover"
         style={{
           transition: 'transform 0.8s cubic-bezier(0.25,1,0.5,1), opacity 0.6s ease',
