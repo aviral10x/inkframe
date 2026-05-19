@@ -25,29 +25,29 @@ export function Navbar() {
           scrolled ? 'shadow-md shadow-black/10' : ''
         }`}
       >
-        {/* Logo — circular IF monogram */}
+        {/* Logo circular IF monogram */}
         <button 
           onClick={() => scrollToSection('hero')}
           className="w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110 overflow-hidden shrink-0"
-          aria-label="InkFrame Films — back to top"
+          aria-label="InkFrame Films back to top"
         >
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="18" cy="18" r="18" fill="#0d1117"/>
-            {/* I — vertical */}
+            {/* I vertical */}
             <rect x="9.5" y="10" width="2.5" height="16" fill="#f0ece4"/>
-            {/* I — top serif */}
+            {/* I top serif */}
             <rect x="7.8" y="10" width="5.9" height="1.6" fill="#f0ece4"/>
-            {/* I — bottom serif */}
+            {/* I bottom serif */}
             <rect x="7.8" y="24.4" width="5.9" height="1.6" fill="#f0ece4"/>
-            {/* F — vertical */}
+            {/* F vertical */}
             <rect x="15.5" y="10" width="2.4" height="16" fill="#f0ece4"/>
-            {/* F — top serif */}
+            {/* F top serif */}
             <rect x="14" y="10" width="3.5" height="1.6" fill="#f0ece4"/>
-            {/* F — bottom serif */}
+            {/* F bottom serif */}
             <rect x="14" y="24.4" width="3.5" height="1.6" fill="#f0ece4"/>
-            {/* F — top horizontal bar */}
+            {/* F top horizontal bar */}
             <rect x="15.5" y="10" width="9" height="2.2" fill="#f0ece4"/>
-            {/* F — middle horizontal bar */}
+            {/* F middle horizontal bar */}
             <rect x="15.5" y="17" width="6.5" height="2" fill="#f0ece4"/>
           </svg>
         </button>

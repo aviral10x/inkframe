@@ -95,7 +95,7 @@ export function Contact() {
       const rem = getRemainingCooldown();
       setCooldownSecsLeft(rem);
       if (rem === 0) {
-        // Cooldown expired — let them resubmit
+        // Cooldown expired let them resubmit
         setSubmitted(false);
       }
     }, 1000);
@@ -122,7 +122,7 @@ export function Contact() {
     try {
       const formData = new FormData();
       formData.append('access_key', '5ef59b49-97e2-4d47-b503-5197e223d81a');
-      formData.append('subject', `InkFrame Inquiry — ${form.style || 'General'}`);
+      formData.append('subject', `InkFrame Inquiry ${form.style || 'General'}`);
       formData.append('from_name', 'InkFrame Films Website');
       formData.append('name', form.name);
       formData.append('email', form.email);
@@ -183,7 +183,7 @@ export function Contact() {
           </div>
         </div>
 
-        {/* Form Container — boxed card */}
+        {/* Form Container boxed card */}
         <div className="flex-1 flex items-center justify-center px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -245,7 +245,7 @@ export function Contact() {
                   onSubmit={handleSubmit}
                   className="space-y-6"
                 >
-                  {/* Honeypot — invisible to humans, bots fill it → Web3Forms drops the submission */}
+                  {/* Honeypot invisible to humans, bots fill it → Web3Forms drops the submission */}
                   <input type="text" name="botcheck" className="hidden" aria-hidden="true" tabIndex={-1} autoComplete="off" />
                   {/* Form Header */}
                   <div className="mb-4">
@@ -289,7 +289,7 @@ export function Contact() {
                     </div>
                   </div>
 
-                  {/* Film Style — pill selector */}
+                  {/* Film Style pill selector */}
                   <div className="space-y-3">
                     <label className="text-[10px] text-[var(--color-muted)] uppercase tracking-[0.2em] font-medium">
                       Film Style

@@ -24,7 +24,7 @@ export function Journal() {
               Campaign <span className="font-display italic">Systems</span>
             </h2>
             <p className="text-[var(--color-muted)] text-base md:text-lg max-w-md leading-relaxed">
-              End-to-end video production built on AI-first workflows — from concept routes to posting-ready deliverables.
+              End-to-end video production built on AI-first workflows from concept routes to posting-ready deliverables.
             </p>
           </div>
 

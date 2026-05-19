@@ -4,7 +4,7 @@ export const contactEmail = 'aviral10x@gmail.com';
 // muxAssetId  → from Mux Dashboard > Video > Asset ID column
 // muxPlaybackId → from Mux Dashboard > click asset > "Playback IDs" tab
 //                 REQUIRED for stream.mux.com and image.mux.com URLs
-//                 Fill these in once you have them — just replace null
+//                 Fill these in once you have them just replace null
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const projects = [

@@ -5,7 +5,7 @@ import { projects } from '../data/content';
 import { muxStream } from '../lib/mux';
 
 /* ─────────────────────────────────────────────────────────────
- * MuxVideo — lazily attaches hls.js on hover, cleans up on leave
+ * MuxVideo lazily attaches hls.js on hover, cleans up on leave
  * Falls back to native HLS on Safari. Graceful fallback to static
  * poster when no playbackId exists.
  * ───────────────────────────────────────────────────────────── */
@@ -65,7 +65,7 @@ function useMuxPlayer(playbackId: string | null | undefined) {
 }
 
 /* ─────────────────────────────────────────────────────────────
- * VideoModal — fullscreen Mux HLS player with sound toggle
+ * VideoModal fullscreen Mux HLS player with sound toggle
  * ───────────────────────────────────────────────────────────── */
 interface ModalProject {
   title: string;
@@ -212,7 +212,7 @@ function VideoModal({ project, onClose }: { project: ModalProject; onClose: () =
 }
 
 /* ─────────────────────────────────────────────────────────────
- * HoverVideoCard — shows local poster, streams HLS on hover,
+ * HoverVideoCard shows local poster, streams HLS on hover,
  * click-to-expand into modal. Exact feel of the original but
  * using adaptive bitrate streaming.
  * ───────────────────────────────────────────────────────────── */
@@ -307,7 +307,7 @@ function HoverVideoCard({
         }}
       />
 
-      {/* Category tag — top left */}
+      {/* Category tag top left */}
       <div
         className="absolute top-5 left-5 z-[2]"
         style={{ opacity: isPlaying ? 0 : 0.9, transition: 'opacity 0.4s ease' }}
@@ -320,7 +320,7 @@ function HoverVideoCard({
         </span>
       </div>
 
-      {/* Index — top right */}
+      {/* Index top right */}
       <span
         className="absolute top-5 right-5 text-[10px] tracking-[0.15em] tabular-nums text-white/30 z-[2]"
         style={{ opacity: isPlaying ? 0 : 1, transition: 'opacity 0.4s ease' }}
@@ -328,7 +328,7 @@ function HoverVideoCard({
         {String(index + 1).padStart(2, '0')}
       </span>
 
-      {/* Play indicator — center */}
+      {/* Play indicator center */}
       <div
         className="absolute inset-0 flex items-center justify-center z-[2] pointer-events-none"
         style={{ opacity: isPlaying ? 0 : 0.2, transition: 'opacity 0.4s ease' }}
@@ -348,7 +348,7 @@ function HoverVideoCard({
         </div>
       </div>
 
-      {/* "Click to expand" — visible during playback */}
+      {/* "Click to expand" visible during playback */}
       <motion.div
         className="absolute top-5 left-1/2 -translate-x-1/2 z-[2] text-[10px] uppercase tracking-[0.2em] tabular-nums"
         animate={{ opacity: isPlaying ? 0.6 : 0 }}
@@ -358,7 +358,7 @@ function HoverVideoCard({
         Click to expand
       </motion.div>
 
-      {/* Bottom info — title, role, year */}
+      {/* Bottom info title, role, year */}
       <div
         className="absolute bottom-0 left-0 right-0 p-5 md:p-6 flex items-end justify-between z-[2]"
         style={{ opacity: isPlaying ? 0 : 1, transition: 'opacity 0.4s ease' }}
@@ -380,7 +380,7 @@ function HoverVideoCard({
 }
 
 /* ─────────────────────────────────────────────────────────────
- * SelectedWorks — anthology layout:
+ * SelectedWorks anthology layout:
  * Full-width → 2-col → Full-width → 2-col → Full-width
  * Exactly like the original, but cleaner with Mux CDN.
  * ───────────────────────────────────────────────────────────── */
@@ -397,7 +397,7 @@ export function SelectedWorks() {
       rows.push({ type: 'wide', items: [projects[idx]] });
       idx++;
     } else {
-      // Pair row — but if only 1 item left, make it wide instead
+      // Pair row but if only 1 item left, make it wide instead
       const pair = projects.slice(idx, idx + 2);
       if (pair.length === 1) {
         rows.push({ type: 'wide', items: pair });
@@ -430,7 +430,7 @@ export function SelectedWorks() {
               Proof of <span className="font-display italic">Work</span>
             </h2>
             <p className="text-[var(--color-muted)] text-base md:text-lg max-w-md leading-relaxed">
-              Campaign films, product commercials, and visual experiments — hover to preview, click to watch.
+              Campaign films, product commercials, and visual experiments hover to preview, click to watch.
             </p>
           </div>
 

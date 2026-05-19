@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Royalty-free cinematic ambient track — swap this URL for your own file
+// Royalty-free cinematic ambient track swap this URL for your own file
 // or place an audio file at /public/audio/ambient.mp3
 const AUDIO_SRC = 'https://cdn.pixabay.com/audio/2022/03/15/audio_44c3c8eea4.mp3';
 
@@ -71,7 +71,7 @@ export function BackgroundAudio() {
     <>
       <audio ref={audioRef} src={AUDIO_SRC} loop preload="none" />
 
-      {/* Toggle button — fixed top-right, outside the navbar pill */}
+      {/* Toggle button fixed top-right, outside the navbar pill */}
       <button
         onClick={toggle}
         title={playing ? 'Mute ambient audio' : 'Play ambient audio'}
