@@ -5,18 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run build:ssr && npm run prerender",
+    "build:ssr": "vite build --ssr src/entry-server.tsx --outDir dist-ssr",
+    "prerender": "node scripts/prerender.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "framer-motion": "^12.38.0",
-    "gsap": "^3.15.0",
-    "hls.js": "^1.6.16",
+    "@fontsource-variable/bodoni-moda": "^5.2.7",
+    "@fontsource-variable/geist": "^5.2.9",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.13.1",
-    "tailwindcss-animate": "^1.0.7"
+    "react-router-dom": "^7.13.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

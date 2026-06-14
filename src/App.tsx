@@ -1,21 +1,39 @@
-import { Hero } from './sections/Hero';
-import { SelectedWorks } from './sections/SelectedWorks';
-import { Journal } from './sections/Journal';
-import { Contact } from './sections/Contact';
-import { FloatingCTA } from './sections/FloatingCTA';
-import { BackgroundAudio } from './sections/BackgroundAudio';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Frame } from './components/Frame';
+import { TopBar } from './components/TopBar';
+import { Home } from './pages/Home';
+import { FilmPage } from './pages/FilmPage';
+
+/* Scroll to hash targets after cross-route navigation, top otherwise */
+function ScrollManager() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+    }
+    window.scrollTo(0, 0);
+  }, [pathname, hash]);
+
+  return null;
+}
 
 function App() {
   return (
     <>
-      <main>
-        <Hero />
-        <SelectedWorks />
-        <Journal />
-        <Contact />
-      </main>
-      <FloatingCTA />
-      <BackgroundAudio />
+      <ScrollManager />
+      <Frame />
+      <TopBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/film/:slug" element={<FilmPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }
