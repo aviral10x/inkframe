@@ -1,8 +1,6 @@
-export const contactEmail = 'aviral10x@gmail.com';
-
 export const socials = [
-  { name: 'Instagram', url: 'https://www.instagram.com/aurakidzzz/' },
-  { name: 'X', url: 'https://x.com/aviral10x' },
+  { name: 'Instagram', url: 'https://www.instagram.com/inkframefilms/' },
+  { name: 'X', url: 'https://x.com/inkframefilms' },
   { name: 'YouTube', url: 'https://youtube.com/@inkframefilms' },
 ];
 
