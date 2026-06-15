@@ -54,8 +54,8 @@ function headFor(route) {
         logo: `${ORIGIN}/inkframe-logo.png`,
         description: HOME_DESC,
         sameAs: [
-          'https://www.instagram.com/aurakidzzz/',
-          'https://x.com/aviral10x',
+          'https://www.instagram.com/inkframefilms/',
+          'https://x.com/inkframefilms',
           'https://youtube.com/@inkframefilms',
         ],
       };

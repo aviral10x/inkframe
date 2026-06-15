@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { contactEmail, filmStyles, socials } from '../data/site';
+import { filmStyles, socials } from '../data/site';
 import { useReveal } from '../hooks/useReveal';
 
 const COOLDOWN_KEY = 'inkframe_form_last_submit';
@@ -189,15 +189,6 @@ export function Close() {
             <div>
               <p className="slate text-bone-dim">A film studio for brands</p>
               <p className="font-display italic text-title text-bone mt-1">InkFrame Films</p>
-            </div>
-            <div>
-              <p className="slate text-bone-dim">Contact</p>
-              <a
-                href={`mailto:${contactEmail}`}
-                className="text-bone text-sm hover:text-seal transition-colors duration-300 mt-1 inline-block"
-              >
-                {contactEmail}
-              </a>
             </div>
             <div>
               <p className="slate text-bone-dim">Elsewhere</p>
