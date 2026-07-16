@@ -1,4 +1,4 @@
-import { stats, proofLines } from '../data/site';
+import { proofLines } from '../data/site';
 import { useReveal } from '../hooks/useReveal';
 
 /**
@@ -6,7 +6,6 @@ import { useReveal } from '../hooks/useReveal';
  */
 export function Proof() {
   const headerRef = useReveal<HTMLElement>();
-  const statsRef = useReveal<HTMLDivElement>();
   const linesRef = useReveal<HTMLDivElement>();
 
   return (
@@ -19,21 +18,8 @@ export function Proof() {
           </h2>
         </header>
 
-        {/* The numbers, one row, divided by hairlines */}
-        <div
-          ref={statsRef}
-          className="reveal grid grid-cols-1 md:grid-cols-3 border-y border-hairline divide-y md:divide-y-0 md:divide-x divide-[var(--color-hairline)]"
-        >
-          {stats.map((stat) => (
-            <div key={stat.label} className="py-10 md:py-14 md:px-10 first:md:pl-0">
-              <div className="font-display italic text-display-lg text-bone">{stat.value}</div>
-              <div className="slate text-bone-dim mt-3">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* Three lines, no carousel */}
-        <div ref={linesRef} className="reveal grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 mt-14 md:mt-20">
+        <div ref={linesRef} className="reveal grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {proofLines.map((p) => (
             <div key={p.lead}>
               <p className="slate text-seal">{p.lead}</p>
