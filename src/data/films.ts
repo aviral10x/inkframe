@@ -10,6 +10,8 @@ export type Film = {
   previewClip: string;
   fullVideoUrl: string;
   featured: boolean;
+  /** 9:16 films: staged vertical in the reel, letterboxed on the watch page */
+  portrait?: boolean;
   order: number;
 };
 
@@ -42,7 +44,7 @@ export const films: Film[] = [
     year: '2026',
     format: 'Brand Trailer',
     logline: 'One sneeze of destiny sends a wide-eyed baby on a mall-wide chase, two steps ahead of a scheming villain.',
-    tags: ['Character IP', '3D Animation', '112M+ views'],
+    tags: ['Character IP', '3D Animation', '450M views'],
     thumbnail: '/previews/aura-trailer.jpg',
     previewClip: '/previews/aura-trailer.mp4',
     fullVideoUrl: '/videos/aura-trailer.mp4',
@@ -76,6 +78,35 @@ export const films: Film[] = [
     fullVideoUrl: '/videos/theft.mp4',
     featured: false,
     order: 4,
+  },
+  {
+    slug: 'drools',
+    title: 'Drools',
+    client: 'Drools × Aura',
+    year: '2026',
+    format: 'Animated Brand Spot',
+    logline: 'The pup is hungry, the house is asleep, and the smallest human in it takes breakfast seriously.',
+    tags: ['3D Animation', 'Character IP', 'Vertical Cut'],
+    thumbnail: '/previews/drools.jpg',
+    previewClip: '/previews/drools.mp4',
+    fullVideoUrl: '/videos/drools.mp4',
+    featured: false,
+    portrait: true,
+    order: 5,
+  },
+  {
+    slug: 'the-residence',
+    title: 'The Residence',
+    client: 'Private Listing',
+    year: '2026',
+    format: 'Property Film',
+    logline: 'A slow morning high above Dubai, where every room turns toward the skyline.',
+    tags: ['Real Estate', 'Interiors', '4K'],
+    thumbnail: '/previews/the-residence.jpg',
+    previewClip: '/previews/the-residence.mp4',
+    fullVideoUrl: '/videos/the-residence.mp4',
+    featured: false,
+    order: 6,
   },
 ];
 

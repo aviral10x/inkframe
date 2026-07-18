@@ -2,23 +2,27 @@ import { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { films, type Film } from '../data/films';
 import { useReveal } from '../hooks/useReveal';
+import { useWantsVideo } from '../hooks/useWantsVideo';
 
 /**
  * One film, staged as a scene. Slate metadata like a clapperboard,
  * a logline like a synopsis. Hover or focus plays the silent preview;
- * click opens the watch page.
+ * click opens the watch page. Portrait films keep their 9:16 frame.
  */
 function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean }) {
   const ref = useReveal<HTMLDivElement>();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const wantsPreview = useWantsVideo();
   const [playing, setPlaying] = useState(false);
 
   const play = useCallback(() => {
+    // Posters only under reduced-motion or save-data
+    if (!wantsPreview) return;
     const v = videoRef.current;
     if (!v) return;
     v.muted = true;
     v.play().then(() => setPlaying(true)).catch(() => {});
-  }, []);
+  }, [wantsPreview]);
 
   const stop = useCallback(() => {
     const v = videoRef.current;
@@ -41,7 +45,11 @@ function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean
         onBlur={stop}
       >
         {/* The shot */}
-        <div className={`relative overflow-hidden bg-ink-raised ${wide ? 'aspect-[21/10]' : 'aspect-[16/10]'}`}>
+        <div
+          className={`relative overflow-hidden bg-ink-raised ${
+            film.portrait ? 'aspect-[9/16]' : wide ? 'aspect-[21/10]' : 'aspect-[16/10]'
+          }`}
+        >
           <img
             src={film.thumbnail}
             alt={`Still from ${film.title}`}
@@ -98,7 +106,9 @@ function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean
 
 /**
  * Act 2, the Reel. An editorial sequence: featured films run full-width,
- * the rest sit in an offset pair. Rhythm over uniformity.
+ * the rest sit in bands of two. A band holding a portrait film stages it
+ * as the vertical cut beside a wide scene; the others offset like spreads.
+ * Rhythm over uniformity, and the layout composes itself from the data.
  */
 export function Reel() {
   const headerRef = useReveal<HTMLElement>();
@@ -106,12 +116,15 @@ export function Reel() {
   const featured = ordered.filter((f) => f.featured);
   const rest = ordered.filter((f) => !f.featured);
 
+  const bands: Film[][] = [];
+  for (let i = 0; i < rest.length; i += 2) bands.push(rest.slice(i, i + 2));
+
   return (
     <section id="work" className="relative px-6 md:px-12 lg:px-20 py-24 md:py-40">
       <header ref={headerRef} className="reveal max-w-[1480px] mx-auto mb-16 md:mb-24">
         <p className="slate text-seal">The Reel</p>
         <h2 className="font-display text-display-lg text-bone mt-4 max-w-3xl">
-          Four films, four different worlds.
+          Six films, six different worlds.
         </h2>
         <p className="text-bone-dim text-base md:text-lg max-w-md mt-4 leading-relaxed">
           Open a scene to watch the film.
@@ -124,14 +137,33 @@ export function Reel() {
           <Scene key={film.slug} film={film} index={ordered.indexOf(film)} wide />
         ))}
 
-        {/* The pair, offset for editorial rhythm */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
-          {rest.map((film, i) => (
-            <div key={film.slug} className={i % 2 === 1 ? 'md:mt-20' : ''}>
-              <Scene film={film} index={ordered.indexOf(film)} wide={false} />
+        {bands.map((band) => {
+          const key = band.map((f) => f.slug).join('+');
+
+          // The vertical cut: a 9:16 film beside a wide scene, centered on it
+          if (band.length === 2 && band.some((f) => f.portrait)) {
+            return (
+              <div key={key} className="grid grid-cols-1 md:grid-cols-5 gap-x-8 gap-y-16 md:items-center">
+                {band.map((film) => (
+                  <div key={film.slug} className={film.portrait ? 'md:col-span-2' : 'md:col-span-3'}>
+                    <Scene film={film} index={ordered.indexOf(film)} wide={false} />
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          // The pair, offset for editorial rhythm
+          return (
+            <div key={key} className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
+              {band.map((film, i) => (
+                <div key={film.slug} className={i % 2 === 1 ? 'md:mt-20' : ''}>
+                  <Scene film={film} index={ordered.indexOf(film)} wide={false} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );

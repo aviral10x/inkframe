@@ -5,7 +5,8 @@ import { filmBySlug, nextFilm, type Film } from '../data/films';
 /**
  * The screen itself. Keyed by film slug from the parent, so switching
  * films remounts it with a fresh poster state. Playback starts on a real
- * click, with sound.
+ * click, with sound. Portrait films get a 9:16 screen held to the
+ * viewport height; everything else letterboxes at 16:9.
  */
 function Player({ film }: { film: Film }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -19,7 +20,17 @@ function Player({ film }: { film: Film }) {
   }
 
   return (
-    <div className="relative bg-black aspect-video overflow-hidden border border-hairline">
+    <div
+      className={`relative bg-black overflow-hidden border border-hairline ${
+        film.portrait ? 'mx-auto' : 'aspect-video'
+      }`}
+      // Width-driven so the 9:16 ratio holds even when narrow phones clamp it
+      style={
+        film.portrait
+          ? { aspectRatio: '9 / 16', width: 'min(100%, calc(min(76vh, 52rem) * 9 / 16))' }
+          : undefined
+      }
+    >
       <video
         ref={videoRef}
         src={film.fullVideoUrl}
