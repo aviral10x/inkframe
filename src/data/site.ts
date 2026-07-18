@@ -4,12 +4,6 @@ export const socials = [
   { name: 'YouTube', url: 'https://youtube.com/@inkframefilms' },
 ];
 
-export const stats = [
-  { value: '450M', label: 'Views in 75 days' },
-  { value: '62+', label: 'Films delivered' },
-  { value: '413K', label: 'Followers built from zero' },
-];
-
 export const proofLines = [
   { lead: 'Speed', line: 'Concept to posting-ready in days, not months.' },
   { lead: 'Craft', line: 'Cinematic light, sound, and pace in every frame.' },
