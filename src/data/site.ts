@@ -5,9 +5,9 @@ export const socials = [
 ];
 
 export const stats = [
-  { value: '112M+', label: 'Views in 90 days' },
+  { value: '450M', label: 'Views in 75 days' },
   { value: '62+', label: 'Films delivered' },
-  { value: '+24%', label: 'Follower growth' },
+  { value: '413K', label: 'Followers built from zero' },
 ];
 
 export const proofLines = [

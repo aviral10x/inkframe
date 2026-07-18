@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { stats, proofLines } from '../data/site';
 import { useReveal } from '../hooks/useReveal';
 
@@ -8,6 +9,7 @@ export function Proof() {
   const headerRef = useReveal<HTMLElement>();
   const statsRef = useReveal<HTMLDivElement>();
   const linesRef = useReveal<HTMLDivElement>();
+  const caseRef = useReveal<HTMLDivElement>();
 
   return (
     <section id="proof" className="relative px-6 md:px-12 lg:px-20 py-24 md:py-40">
@@ -40,6 +42,19 @@ export function Proof() {
               <p className="text-bone text-base md:text-lg leading-relaxed mt-3 max-w-xs">{p.line}</p>
             </div>
           ))}
+        </div>
+
+        {/* The receipts, one page deep */}
+        <div ref={caseRef} className="reveal border-t border-hairline mt-14 md:mt-20 pt-10 md:pt-14">
+          <Link to="/aurakidzzz" className="group block">
+            <p className="slate text-seal">Case Study</p>
+            <p className="font-display italic text-title text-bone mt-2 group-hover:text-seal transition-colors duration-400">
+              Aura Kid: zero to 450M views in 75 days.
+            </p>
+            <p className="slate text-bone-dim mt-3 group-hover:text-bone transition-colors duration-300">
+              Read the full story
+            </p>
+          </Link>
         </div>
       </div>
     </section>

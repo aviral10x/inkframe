@@ -9,10 +9,11 @@ Concept: **a frame of film being inked into existence.** Ink = the palette, the 
 
 | Act | Component | What happens | Replaces |
 |---|---|---|---|
-| 1. Opening Shot | `Opening.tsx` | One beat of near-black; the frame draws in; title card "InkFrame Films" resolves; headline "Films that stay with you."; subline carries commerce ("Cinematic ads, fashion films, and launch films for brands"); single scroll cue. Background: a full-bleed moment from our strongest work (muted micro-loop on desktop, still image on mobile). | Hero + rotating roles widget |
-| 2. The Reel | `Reel.tsx` | Editorial sequence, not a grid. Each film is a scene: slate line in mono (`CLIENT · FORMAT · YEAR`), film title in display serif, one-line logline written as synopsis. Rhythm: full-width scene → offset pair → full-width. Hover = silent preview (kept). Click = full watch view at `/film/<slug>` (linkable, indexable). | SelectedWorks + modal |
+| 1. Opening Shot | `Opening.tsx` | One beat of near-black; the frame draws in; title card "InkFrame Films" resolves; headline "Films that stay with you."; subline carries commerce ("Cinematic ads, character worlds, and launch films for brands"); single scroll cue. Background: a trailer-style montage, one beat per film on the reel, with a live scene slate in the corner (muted micro-loop on desktop, still image on mobile). | Hero + rotating roles widget |
+| 2. The Reel | `Reel.tsx` | Editorial sequence, not a grid. Each film is a scene: slate line in mono (`CLIENT · FORMAT · YEAR`), film title in display serif, one-line logline written as synopsis. Rhythm: full-width scene → offset pair → vertical-cut band (a 9:16 film beside a wide scene). Hover = silent preview (kept). Click = full watch view at `/film/<slug>` (linkable, indexable). | SelectedWorks + modal |
+| — Interlude | `Interlude.tsx` | One establishing shot between the reel and the method: full-bleed silent loop (The Residence balcony, ping-ponged), one line ("Every brief is a new world."). Same media gating as the Opening; type over photography is bone only, since seal cannot hold AA off pure ink. | (new) |
 | 3. The Method | `Method.tsx` | The offer as filmmaking process: **Concept → World → Frames → Cut → Launch**. Each stage: one sentence, deliverables as quiet mono metadata. This is where "AI-first pipeline" is said plainly. | Journal/"Campaign Systems" cards |
-| 4. The Proof | `Proof.tsx` | Short and confident: 112M+ views, 62+ films delivered, +24% follower growth (real numbers from the Aura report) + three lines: speed of iteration, cinematic quality, end-to-end (concept → posting-ready). No carousels. | (currently missing; mounts the orphaned Stats data) |
+| 4. The Proof | `Proof.tsx` | Short and confident: 450M views in 75 days, 62+ films delivered, 413K followers built from zero (real numbers from the Aura run) + three lines: speed of iteration, cinematic quality, end-to-end (concept → posting-ready) + a quiet link to the `/aurakidzzz` case study. No carousels. | (currently missing; mounts the orphaned Stats data) |
 | 5. Closing Frame | `Close.tsx` | Cut to near-black. One line: "Have a story?" One action: the inquiry form (Web3Forms kept). Footer styled as end credits: roles and names in mono, socials as quiet footnotes. | Contact + marquee |
 
 Persistent: `Frame.tsx` (signature element, below) and a minimal top bar (wordmark + Work / Method / Contact as quiet text links; the pill nav and separate audio button go away).
@@ -36,11 +37,12 @@ type Film = {
   previewClip: string;   // /previews/<slug>.mp4  (muted hover loop, ≤2MB)
   fullVideoUrl: string;  // /videos/<slug>.mp4
   featured: boolean;     // featured films render full-width scenes
+  portrait?: boolean;    // 9:16 films: staged vertical in the reel, 9:16 screen on the watch page
   order: number;
 }
 ```
 
-Current films: alphas-deal (featured), aura-trailer (featured), ferrari-concept, theft. SLOT-ready for the films you'll supply. Existing `/videos/*` and `/previews/*` URLs unchanged.
+Current films: alphas-deal (featured), aura-trailer (featured), ferrari-concept, theft, drools (portrait), the-residence. SLOT-ready for the films you'll supply. Existing `/videos/*` and `/previews/*` URLs unchanged.
 
 ## 3. Palette (6 tokens, used everywhere)
 
@@ -82,7 +84,7 @@ Why not the alternatives: the ink-reveal (SVG turbulence on titles) runs once an
 
 ## 7. Performance budget & video strategy
 
-- **hls.js and Mux are removed.** Hero uses a local ≤1.5MB muted micro-loop (`/previews/hero-loop.mp4`, cut from our strongest film) on desktop pointers only; mobile and reduced-motion/data get a high-quality AVIF/WebP still. LCP element becomes that poster image, preloaded → LCP < 2.5s achievable.
+- **hls.js and Mux are removed.** Hero uses a local ≤1.5MB muted micro-loop (`/previews/hero-montage.mp4`, a 9s six-beat montage of the reel with a live scene slate) on desktop pointers only; mobile and reduced-motion/data get a high-quality AVIF/WebP still. LCP element becomes that poster image, preloaded on the homepage only → LCP < 2.5s achievable.
 - Hover previews: existing local MP4s (0.3–1.5MB ✓), `preload="none"` until first pointer intent (fixes mobile fetching videos it can never hover).
 - Full films load only on the `/film/` watch page, `preload="metadata"`, poster shown instantly.
 - Posters: generate AVIF + WebP + JPG fallback at 1280w and 640w (`<picture>`/`srcset`).
@@ -91,7 +93,7 @@ Why not the alternatives: the ink-reveal (SVG turbulence on titles) runs once an
 
 ## 8. SEO plan (hard requirement)
 
-- Add react-router (already installed, currently dead) with routes `/` and `/film/<slug>`.
+- Add react-router (already installed, currently dead) with routes `/`, `/film/<slug>`, and `/aurakidzzz` (the character IP case study).
 - **Build-time prerender:** postbuild Node script renders each route via `react-dom/server` into real HTML (`dist/index.html`, `dist/film/<slug>/index.html`) — search engines and link unfurlers see full content; the SPA hydrates on top. No framework migration.
 - Per-route meta: unique title/description, canonical, OpenGraph + Twitter cards; per-film OG image (1200×630 generated from poster frames via ffmpeg script in `scripts/`).
 - JSON-LD: `Organization` (site) + `VideoObject` per film (name, description, thumbnailUrl, contentUrl, uploadDate).

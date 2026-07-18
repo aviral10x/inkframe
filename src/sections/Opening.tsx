@@ -1,22 +1,25 @@
 import { useRef, useState } from 'react';
+import { films } from '../data/films';
+import { useWantsVideo } from '../hooks/useWantsVideo';
+
+/* The montage cuts once per scene; the slate caption cuts with it */
+const SCENE_SECONDS = 1.5;
+const scenes = [...films].sort((a, b) => a.order - b.order);
 
 /**
  * Act 1, the Opening Shot. One beat of darkness, then the title card
- * resolves over the opening moment of Alpha's Deal. Desktop pointers get a
- * muted micro-loop; mobile and reduced-motion get the still frame only.
- * The entrance is pure CSS so it can never stall on a busy main thread.
+ * resolves over a trailer-style montage: one beat from every film on the
+ * reel, with a live scene slate in the corner like a dailies reel.
+ * Desktop pointers get the muted micro-loop; mobile and reduced-motion
+ * get the still frame only. The entrance is pure CSS so it can never
+ * stall on a busy main thread.
  */
 export function Opening() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // Micro-loop only for non-touch pointers without reduced-motion/data preferences
-  const [wantsVideo] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-    type NetInfo = { saveData?: boolean };
-    const saveData = (navigator as Navigator & { connection?: NetInfo }).connection?.saveData === true;
-    return window.matchMedia('(pointer: fine)').matches && !saveData;
-  });
+  const wantsVideo = useWantsVideo();
   const [videoReady, setVideoReady] = useState(false);
+  const [sceneIdx, setSceneIdx] = useState(0);
 
   return (
     <section id="top" className="relative min-h-screen overflow-hidden flex flex-col">
@@ -46,13 +49,21 @@ export function Opening() {
       {wantsVideo && (
         <video
           ref={videoRef}
-          src="/previews/hero-loop.mp4"
+          src="/previews/hero-montage.mp4"
           muted
           loop
           playsInline
           autoPlay
           preload="auto"
-          onCanPlay={() => setVideoReady(true)}
+          // Mounted after hydration, where the autoplay attribute alone can be ignored
+          onCanPlay={(e) => {
+            setVideoReady(true);
+            e.currentTarget.play().catch(() => {});
+          }}
+          onTimeUpdate={(e) => {
+            const i = Math.min(scenes.length - 1, Math.floor(e.currentTarget.currentTime / SCENE_SECONDS));
+            setSceneIdx(i);
+          }}
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
           style={{ opacity: videoReady ? 1 : 0 }}
         />
@@ -80,9 +91,16 @@ export function Opening() {
         </p>
 
         <p className="enter-subline text-bone/85 text-sm md:text-base max-w-md mt-5 leading-relaxed [text-shadow:0_1px_18px_rgb(11_10_8/0.9)]">
-          Cinematic ads, fashion films, and launch films for brands.
+          Cinematic ads, character worlds, and launch films for brands.
         </p>
       </div>
+
+      {/* The live slate: which film is on screen right now */}
+      {wantsVideo && videoReady && (
+        <p className="slate absolute bottom-10 left-6 md:left-12 z-10 text-bone/70 [text-shadow:0_1px_12px_rgb(11_10_8/0.9)]">
+          SC.{String(sceneIdx + 1).padStart(2, '0')} · {scenes[sceneIdx].title}
+        </p>
+      )}
 
       {/* Scroll cue */}
       <a

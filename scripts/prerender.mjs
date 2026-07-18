@@ -21,20 +21,38 @@ const HOME_DESC =
 
 const template = readFileSync(resolve(root, 'dist/index.html'), 'utf8');
 
+/* The hero poster preload belongs to the homepage only */
+const HERO_PRELOAD = /<link[^>]*rel="preload"[\s\S]*?hero-poster[\s\S]*?\/>\s*/;
+
 const esc = (s) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const AURA_TITLE = 'Aura Kid Case Study | InkFrame Films';
+const AURA_DESC =
+  'How InkFrame Films grew an original character from zero to 413K followers and 450M views in 75 days.';
 
 function headFor(route) {
   const film = route.startsWith('/film/')
     ? films.find((f) => `/film/${f.slug}` === route)
     : null;
+  const aura = route === '/aurakidzzz';
 
-  const title = film ? `${film.title} | ${SITE_NAME}` : HOME_TITLE;
-  const desc = film ? film.logline : HOME_DESC;
+  const title = film ? `${film.title} | ${SITE_NAME}` : aura ? AURA_TITLE : HOME_TITLE;
+  const desc = film ? film.logline : aura ? AURA_DESC : HOME_DESC;
   const url = `${ORIGIN}${route === '/' ? '' : route}`;
-  const image = `${ORIGIN}/og/${film ? film.slug : 'home'}.jpg`;
+  const image = `${ORIGIN}/og/${film ? film.slug : aura ? 'aurakidzzz' : 'home'}.jpg`;
 
-  const jsonLd = film
+  const jsonLd = aura
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: 'Aura Kid: zero to 450M views in 75 days',
+        description: AURA_DESC,
+        image,
+        author: { '@type': 'Organization', name: SITE_NAME, url: ORIGIN },
+        datePublished: '2026-07-18',
+      }
+    : film
     ? {
         '@context': 'https://schema.org',
         '@type': 'VideoObject',
@@ -65,7 +83,7 @@ function headFor(route) {
     desc,
     head: [
       `<link rel="canonical" href="${url}" />`,
-      `<meta property="og:type" content="${film ? 'video.other' : 'website'}" />`,
+      `<meta property="og:type" content="${film ? 'video.other' : aura ? 'article' : 'website'}" />`,
       `<meta property="og:site_name" content="${SITE_NAME}" />`,
       `<meta property="og:url" content="${url}" />`,
       `<meta property="og:title" content="${esc(title)}" />`,
@@ -82,13 +100,14 @@ function headFor(route) {
   };
 }
 
-const routes = ['/', ...films.map((f) => `/film/${f.slug}`)];
+const routes = ['/', ...films.map((f) => `/film/${f.slug}`), '/aurakidzzz'];
 
 for (const route of routes) {
   const appHtml = render(route);
   const { title, desc, head } = headFor(route);
 
-  const html = template
+  const base = route === '/' ? template : template.replace(HERO_PRELOAD, '');
+  const html = base
     .replace(/<title>.*?<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/<meta name="description"[^>]*\/>/, `<meta name="description" content="${esc(desc)}" />`)
     .replace('<!--app-head-->', head)

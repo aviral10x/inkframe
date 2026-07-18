@@ -4,6 +4,7 @@ import { Frame } from './components/Frame';
 import { TopBar } from './components/TopBar';
 import { Home } from './pages/Home';
 import { FilmPage } from './pages/FilmPage';
+import { AuraPage } from './pages/AuraPage';
 
 /* Scroll to hash targets after cross-route navigation, top otherwise */
 function ScrollManager() {
@@ -32,6 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/film/:slug" element={<FilmPage />} />
+        <Route path="/aurakidzzz" element={<AuraPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
