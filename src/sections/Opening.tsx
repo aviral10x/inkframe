@@ -1,15 +1,15 @@
 import { useRef, useState } from 'react';
-import { films } from '../data/films';
+import { heroMontage } from '../data/films';
 import { useWantsVideo } from '../hooks/useWantsVideo';
 
 /* The montage cuts once per scene; the slate caption cuts with it */
 const SCENE_SECONDS = 1.5;
-const scenes = [...films].sort((a, b) => a.order - b.order);
+const scenes = heroMontage;
 
 /**
  * Act 1, the Opening Shot. One beat of darkness, then the title card
- * resolves over a trailer-style montage: one beat from every film on the
- * reel, with a live scene slate in the corner like a dailies reel.
+ * resolves over a trailer-style montage: one beat from each of eight films
+ * on the reel, with a live scene slate in the corner like a dailies reel.
  * Desktop pointers get the muted micro-loop; mobile and reduced-motion
  * get the still frame only. The entrance is pure CSS so it can never
  * stall on a busy main thread.
