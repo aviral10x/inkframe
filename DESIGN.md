@@ -9,8 +9,8 @@ Concept: **a frame of film being inked into existence.** Ink = the palette, the 
 
 | Act | Component | What happens | Replaces |
 |---|---|---|---|
-| 1. Opening Shot | `Opening.tsx` | One beat of near-black; the frame draws in; title card "InkFrame Films" resolves; headline "Films that stay with you."; subline carries commerce ("Cinematic ads, character worlds, and launch films for brands"); single scroll cue. Background: a trailer-style montage, one beat per film on the reel, with a live scene slate in the corner (muted micro-loop on desktop, still image on mobile). | Hero + rotating roles widget |
-| 2. The Reel | `Reel.tsx` | Editorial sequence, not a grid. Each film is a scene: slate line in mono (`CLIENT · FORMAT · YEAR`), film title in display serif, one-line logline written as synopsis. Rhythm: full-width scene → offset pair → vertical-cut band (a 9:16 film beside a wide scene). Hover = silent preview (kept). Click = full watch view at `/film/<slug>` (linkable, indexable). | SelectedWorks + modal |
+| 1. Opening Shot | `Opening.tsx` | One beat of near-black; the frame draws in; title card "InkFrame Films" resolves; headline "Films that stay with you."; subline carries commerce ("Cinematic ads, character worlds, and launch films for brands"); single scroll cue. Background: a trailer-style montage, one beat each from eight films on the reel (listed in `heroMontage` in `films.ts`), with a live scene slate in the corner (muted micro-loop on desktop, still image on mobile). | Hero + rotating roles widget |
+| 2. The Reel | `Reel.tsx` | Editorial sequence, not a grid. Each film is a scene: slate line in mono (`CLIENT · FORMAT · YEAR`), film title in display serif, one-line logline written as synopsis. Rhythm, composed from the data order: full-width scene (featured or lone wide film) → vertical strip (two or three 9:16 films side by side) → vertical-cut band (a 9:16 film beside a wide scene) → offset pair (two wide films). Hover = silent preview (kept). Click = full watch view at `/film/<slug>` (linkable, indexable). | SelectedWorks + modal |
 | — Interlude | `Interlude.tsx` | One establishing shot between the reel and the method: full-bleed silent loop (The Residence balcony, ping-ponged), one line ("Every brief is a new world."). Same media gating as the Opening; type over photography is bone only, since seal cannot hold AA off pure ink. | (new) |
 | 3. The Method | `Method.tsx` | The offer as filmmaking process: **Concept → World → Frames → Cut → Launch**. Each stage: one sentence, deliverables as quiet mono metadata. This is where "AI-first pipeline" is said plainly. | Journal/"Campaign Systems" cards |
 | 4. The Proof | `Proof.tsx` | Short and confident: three lines (speed of iteration, cinematic quality, end-to-end) + a quiet link to the `/aurakidzzz` case study, which carries the numbers (zero to 450M views in 75 days). The homepage numbers strip was retired; the case-study page owns the stats. No carousels. | (currently missing; mounts the orphaned Stats data) |
@@ -42,7 +42,7 @@ type Film = {
 }
 ```
 
-Current films: alphas-deal (featured), aura-trailer (featured), ferrari-concept, theft, drools (portrait), the-residence. SLOT-ready for the films you'll supply. Existing `/videos/*` and `/previews/*` URLs unchanged.
+Current films (19, in reel order): alphas-deal (featured), aura-trailer (featured), liquid-death, stanley, starbucks (portrait strip), caneza + bacca-buchi (vertical cut), before-the-first-frame (featured), the-last-happy-night, first-light, zer0 (portrait strip), the-residence + kaizen-pilates, drools + aura-and-the-dragon (vertical cut), ferrari-concept + game-intro, the-aftermath + theft. Full films are 720p H.264 (HDR sources tone-mapped to SDR with zscale + hable), previews are 6s muted loops under 1MB, OG cards are 1200x630. Existing `/videos/*` and `/previews/*` URLs unchanged.
 
 ## 3. Palette (6 tokens, used everywhere)
 
@@ -84,7 +84,7 @@ Why not the alternatives: the ink-reveal (SVG turbulence on titles) runs once an
 
 ## 7. Performance budget & video strategy
 
-- **hls.js and Mux are removed.** Hero uses a local ≤1.5MB muted micro-loop (`/previews/hero-montage.mp4`, a 9s six-beat montage of the reel with a live scene slate) on desktop pointers only; mobile and reduced-motion/data get a high-quality AVIF/WebP still. LCP element becomes that poster image, preloaded on the homepage only → LCP < 2.5s achievable.
+- **hls.js and Mux are removed.** Hero uses a local ≤1.5MB muted micro-loop (`/previews/hero-montage.mp4`, a 12s eight-beat montage of the reel with a live scene slate) on desktop pointers only; mobile and reduced-motion/data get a high-quality AVIF/WebP still. LCP element becomes that poster image, preloaded on the homepage only → LCP < 2.5s achievable.
 - Hover previews: existing local MP4s (0.3–1.5MB ✓), `preload="none"` until first pointer intent (fixes mobile fetching videos it can never hover).
 - Full films load only on the `/film/` watch page, `preload="metadata"`, poster shown instantly.
 - Posters: generate AVIF + WebP + JPG fallback at 1280w and 640w (`<picture>`/`srcset`).
