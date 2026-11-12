@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { ChannelButtons } from '../components/Channels';
 import { filmBySlug, nextFilm, type Film } from '../data/films';
 
 /**
@@ -8,7 +9,7 @@ import { filmBySlug, nextFilm, type Film } from '../data/films';
  * click, with sound. Portrait films get a 9:16 screen held to the
  * viewport height; everything else letterboxes at 16:9.
  */
-function Player({ film }: { film: Film }) {
+function Player({ film, startAt = 0, autoplay = false }: { film: Film; startAt?: number; autoplay?: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
 
@@ -18,6 +19,21 @@ function Player({ film }: { film: Film }) {
     v.muted = false;
     v.play().then(() => setStarted(true)).catch(() => {});
   }
+
+  // Opened from a playing scene in the reel: carry on from the same moment.
+  // The click that got us here counts as the gesture, so sound is allowed.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !autoplay) return;
+    const seek = () => {
+      if (startAt > 0.5 && startAt < (v.duration || Infinity) - 1) v.currentTime = startAt;
+    };
+    if (v.readyState >= 1) seek();
+    else v.addEventListener('loadedmetadata', seek, { once: true });
+    v.muted = false;
+    v.play().then(() => setStarted(true)).catch(() => {});
+    return () => v.removeEventListener('loadedmetadata', seek);
+  }, [autoplay, startAt]);
 
   return (
     <div
@@ -65,6 +81,7 @@ function Player({ film }: { film: Film }) {
 export function FilmPage() {
   const { slug = '' } = useParams();
   const film = filmBySlug(slug);
+  const { state } = useLocation() as { state: { t?: number; autoplay?: boolean } | null };
 
   useEffect(() => {
     if (!film) return;
@@ -90,7 +107,7 @@ export function FilmPage() {
           </p>
         </div>
 
-        <Player key={film.slug} film={film} />
+        <Player key={film.slug} film={film} startAt={state?.t ?? 0} autoplay={!!state?.autoplay} />
 
         {/* Below the screen */}
         <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
@@ -117,6 +134,29 @@ export function FilmPage() {
               {next.title}
             </span>
           </Link>
+        </div>
+
+        {/* The moment of most interest: ask for the film */}
+        <div className="mt-16 md:mt-24 border-t border-hairline pt-10 md:pt-14 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 md:items-end">
+          <div>
+            <p className="slate text-seal">Your brand, this kind of film</p>
+            <p className="font-display italic text-title text-bone mt-3 max-w-xl">Want a film like {film.title}?</p>
+            <p className="text-bone-dim text-sm md:text-base mt-3 max-w-lg leading-relaxed">
+              Tell us about your brand and we will come back within 24 hours with a route, timeline, and quote.
+            </p>
+          </div>
+          <div className="flex flex-col items-start md:items-end gap-4">
+            <Link
+              to={`/?ref=${film.slug}#contact`}
+              className="bg-bone text-ink text-sm font-medium px-8 py-4 hover:bg-seal transition-colors duration-300"
+            >
+              Start a film like this
+            </Link>
+            <ChannelButtons
+              message={`Hi InkFrame, I just watched ${film.title} on your site and want something like it for my brand.`}
+              subject={`A film like ${film.title}`}
+            />
+          </div>
         </div>
       </div>
     </main>

@@ -1,11 +1,37 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useWantsVideo } from '../hooks/useWantsVideo';
+import { setSoundOn, useSound } from '../lib/playback';
 
 const links = [
   { label: 'Work', to: '/#work' },
   { label: 'Method', to: '/#method' },
-  { label: 'Contact', to: '/#contact' },
 ];
+
+/* Sound for hover playback in the reel (desktop pointers only) */
+function SoundToggle() {
+  const { soundOn } = useSound();
+  return (
+    <button
+      type="button"
+      onClick={() => setSoundOn(!soundOn)}
+      aria-pressed={soundOn}
+      aria-label={soundOn ? 'Sound on. Click to mute film previews' : 'Sound off. Click to hear film previews'}
+      className="slate flex items-center gap-2 text-bone-dim hover:text-bone transition-colors duration-300"
+    >
+      <span aria-hidden="true" className="flex items-end gap-[2px] h-3">
+        {[0.5, 1, 0.7, 0.85].map((h, i) => (
+          <span
+            key={i}
+            className={`w-[2px] bg-current origin-bottom ${soundOn ? 'animate-[eq_1.1s_ease-in-out_infinite]' : ''}`}
+            style={{ height: soundOn ? `${h * 100}%` : '25%', animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+      </span>
+      Sound {soundOn ? 'on' : 'off'}
+    </button>
+  );
+}
 
 /**
  * Minimal top bar inside the frame. The wordmark stays hidden while the
@@ -14,6 +40,7 @@ const links = [
  */
 export function TopBar() {
   const { pathname } = useLocation();
+  const wantsVideo = useWantsVideo();
   const onHome = pathname === '/';
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
   const docked = !onHome || scrolledPastHero;
@@ -41,15 +68,22 @@ export function TopBar() {
           InkFrame Films
         </Link>
         <div className="flex items-center gap-5 md:gap-8">
+          {wantsVideo && <SoundToggle />}
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="slate text-bone-dim hover:text-bone transition-colors duration-300"
+              className="slate text-bone-dim hover:text-bone transition-colors duration-300 hidden sm:inline"
             >
               {l.label}
             </Link>
           ))}
+          <Link
+            to="/#contact"
+            className="slate text-bone border border-seal/70 px-3 md:px-4 py-2 hover:bg-seal hover:text-ink transition-colors duration-300"
+          >
+            Start a film
+          </Link>
         </div>
       </nav>
     </header>
