@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Frame } from './components/Frame';
 import { TopBar } from './components/TopBar';
+import { FloatingContact } from './components/FloatingContact';
 import { Home } from './pages/Home';
 import { FilmPage } from './pages/FilmPage';
 import { AuraPage } from './pages/AuraPage';
@@ -36,6 +37,7 @@ function App() {
         <Route path="/aurakidzzz" element={<AuraPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <FloatingContact />
     </>
   );
 }

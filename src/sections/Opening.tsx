@@ -93,6 +93,21 @@ export function Opening() {
         <p className="enter-subline text-bone/85 text-sm md:text-base max-w-md mt-5 leading-relaxed [text-shadow:0_1px_18px_rgb(11_10_8/0.9)]">
           Cinematic ads, character worlds, and launch films for brands.
         </p>
+
+        <div className="enter-late flex flex-wrap items-center justify-center gap-3 mt-9">
+          <a
+            href="#contact"
+            className="bg-bone text-ink text-sm font-medium px-7 py-3.5 hover:bg-seal transition-colors duration-300"
+          >
+            Start a film
+          </a>
+          <a
+            href="#work"
+            className="text-bone text-sm px-7 py-3.5 border border-bone/40 bg-ink/30 backdrop-blur-sm hover:border-bone transition-colors duration-300"
+          >
+            Watch the reel
+          </a>
+        </div>
       </div>
 
       {/* The live slate: which film is on screen right now */}

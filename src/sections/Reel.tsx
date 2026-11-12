@@ -1,47 +1,102 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { films, type Film } from '../data/films';
+import { filmKinds, films, type Film, type FilmKind } from '../data/films';
 import { useReveal } from '../hooks/useReveal';
 import { useWantsVideo } from '../hooks/useWantsVideo';
+import { playFilm, setSoundOn, stopFilm } from '../lib/playback';
+
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+/** Poster sizes per layout slot, so phones never download desktop stills */
+const POSTER_SIZES = {
+  wide: '(min-width: 768px) 92vw, 100vw',
+  half: '(min-width: 768px) 46vw, 100vw',
+  portrait: '(min-width: 768px) 30vw, 70vw',
+} as const;
+
+function Poster({ film, slot, eager, hidden }: { film: Film; slot: keyof typeof POSTER_SIZES; eager: boolean; hidden: boolean }) {
+  const base = film.thumbnail.replace(/\.jpg$/, '');
+  // -sm / -lg webp are 640 / 1280 wide (360 / 720 for vertical films)
+  const [sm, lg] = film.portrait ? [360, 720] : [640, 1280];
+  return (
+    <picture>
+      <source type="image/webp" srcSet={`${base}-sm.webp ${sm}w, ${base}-lg.webp ${lg}w`} sizes={POSTER_SIZES[slot]} />
+      <img
+        src={film.thumbnail}
+        alt={`Still from ${film.title}`}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover transition-[transform,opacity] duration-700 ease-out"
+        style={{ opacity: hidden ? 0 : 1, transform: hidden ? 'scale(1.02)' : 'scale(1)' }}
+      />
+    </picture>
+  );
+}
 
 /**
- * One film, staged as a scene. Slate metadata like a clapperboard,
- * a logline like a synopsis. Hover or focus plays the silent preview;
- * click opens the watch page. Portrait films keep their 9:16 frame.
+ * One film, staged as a scene. Slate metadata like a clapperboard, a
+ * logline like a synopsis. On desktop, hovering plays the whole film in
+ * place, with sound once the browser allows it, and it resumes where it
+ * left off. Click opens the watch page at the same moment.
  */
 function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean }) {
   const ref = useReveal<HTMLDivElement>();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const wantsPreview = useWantsVideo();
+  const wantsVideo = useWantsVideo();
+  const [near, setNear] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [progress, setProgress] = useState({ t: 0, d: 0 });
+  const hovering = useRef(false);
 
-  const play = useCallback(() => {
-    // Posters only under reduced-motion or save-data
-    if (!wantsPreview) return;
+  // Fetch the film's header (not the film) once the card is close to view
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !wantsVideo) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        setNear(true);
+        io.disconnect();
+      }
+    }, { rootMargin: '600px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, wantsVideo]);
+
+  const start = useCallback(async ({ sound = true } = {}) => {
     const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    v.play().then(() => setPlaying(true)).catch(() => {});
-  }, [wantsPreview]);
+    if (!v || !wantsVideo) return;
+    hovering.current = true;
+    const result = await playFilm(v, { sound });
+    if (!hovering.current) return stopFilm(v);
+    setMuted(v.muted);
+    setPlaying(result !== 'failed');
+  }, [wantsVideo]);
 
   const stop = useCallback(() => {
+    hovering.current = false;
     const v = videoRef.current;
-    if (v) {
-      v.pause();
-      v.currentTime = 0;
-    }
+    if (v) stopFilm(v);
     setPlaying(false);
   }, []);
 
+  // Follows the element itself, so a gesture that unmutes mid-play updates the chip
+  const audible = playing && !muted;
+  const slot = film.portrait ? 'portrait' : wide ? 'wide' : 'half';
+
   return (
-    <div ref={ref} className="reveal">
+    <div
+      ref={ref}
+      className="reveal relative group"
+      onMouseEnter={() => start()}
+      onMouseLeave={stop}
+    >
       <Link
         to={`/film/${film.slug}`}
+        state={{ t: progress.t, autoplay: true }}
         aria-label={`Watch ${film.title}, ${film.format}, ${film.year}`}
-        className="group block"
-        onMouseEnter={play}
-        onMouseLeave={stop}
-        onFocus={play}
+        className="block"
+        onFocus={() => start({ sound: false })}
         onBlur={stop}
       >
         {/* The shot */}
@@ -50,56 +105,77 @@ function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean
             film.portrait ? 'aspect-[9/16]' : wide ? 'aspect-[21/10]' : 'aspect-[16/10]'
           }`}
         >
-          <img
-            src={film.thumbnail}
-            alt={`Still from ${film.title}`}
-            loading={index === 0 ? 'eager' : 'lazy'}
-            className="absolute inset-0 w-full h-full object-cover transition-[transform,opacity] duration-700 ease-out"
-            style={{ opacity: playing ? 0 : 1, transform: playing ? 'scale(1.02)' : 'scale(1)' }}
-          />
-          <video
-            ref={videoRef}
-            src={film.previewClip}
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden="true"
-            tabIndex={-1}
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-            style={{ opacity: playing ? 1 : 0 }}
-          />
+          <Poster film={film} slot={slot} eager={index === 0} hidden={playing} />
+          {wantsVideo && (
+            <video
+              ref={videoRef}
+              src={film.fullVideoUrl}
+              playsInline
+              preload={near ? 'metadata' : 'none'}
+              aria-hidden="true"
+              tabIndex={-1}
+              onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+              onTimeUpdate={(e) => setProgress({ t: e.currentTarget.currentTime, d: e.currentTarget.duration || 0 })}
+              onEnded={(e) => {
+                e.currentTarget.currentTime = 0;
+                setPlaying(false);
+              }}
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+              style={{ opacity: playing ? 1 : 0 }}
+            />
+          )}
 
           {/* Scene number, slate corner */}
-          <span className="slate absolute top-4 right-4 text-bone/50">
-            {String(index + 1).padStart(2, '0')}
+          <span className="slate absolute top-4 right-4 text-bone/50">{String(index + 1).padStart(2, '0')}</span>
+
+          {/* Running time while it plays */}
+          <span
+            className="slate absolute bottom-4 left-4 text-bone/80 tabular-nums transition-opacity duration-300 [text-shadow:0_1px_10px_rgb(11_10_8/0.9)]"
+            style={{ opacity: playing && progress.d ? 1 : 0 }}
+          >
+            {clock(progress.t)} / {clock(progress.d)}
           </span>
 
-          {/* Watch mark, appears on hover/focus */}
+          {/* Watch mark */}
           <span
-            className="slate absolute bottom-4 right-4 text-seal transition-opacity duration-300"
+            className="slate absolute bottom-4 right-4 text-seal transition-opacity duration-300 [text-shadow:0_1px_10px_rgb(11_10_8/0.9)]"
             style={{ opacity: playing ? 1 : 0 }}
           >
-            Watch
+            Watch full screen
           </span>
 
+          {/* The playhead */}
+          <span
+            aria-hidden="true"
+            className="absolute left-0 bottom-0 h-px bg-seal transition-opacity duration-300"
+            style={{ width: `${progress.d ? (progress.t / progress.d) * 100 : 0}%`, opacity: playing ? 1 : 0 }}
+          />
         </div>
 
         {/* The slate */}
-        <div className="mt-4 md:mt-5 flex items-baseline justify-between gap-6">
-          <div>
-            <p className="slate text-bone-dim">
-              {film.client} · {film.format} · {film.year}
-            </p>
-            <h3 className="font-display italic text-title text-bone mt-2 group-hover:text-seal transition-colors duration-400">
-              {film.title}
-            </h3>
-            <p className="text-bone-dim text-sm md:text-base leading-relaxed max-w-xl mt-2">
-              {film.logline}
-            </p>
-          </div>
+        <div className="mt-4 md:mt-5">
+          <p className="slate text-bone-dim">
+            {film.client} · {film.format} · {film.year}
+          </p>
+          <h3 className="font-display italic text-title text-bone mt-2 group-hover:text-seal transition-colors duration-400">
+            {film.title}
+          </h3>
+          <p className="text-bone-dim text-sm md:text-base leading-relaxed max-w-xl mt-2">{film.logline}</p>
         </div>
       </Link>
+
+      {/* Sound, outside the link so it never opens the film */}
+      {wantsVideo && (
+        <button
+          type="button"
+          onClick={() => setSoundOn(!audible)}
+          className="slate absolute top-3 left-3 px-2.5 py-1.5 bg-ink/70 backdrop-blur-sm border border-hairline text-bone hover:text-seal transition-[opacity,color] duration-300"
+          style={{ opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
+          aria-label={audible ? 'Mute sound' : 'Turn sound on'}
+        >
+          {audible ? 'Sound on' : 'Click for sound'}
+        </button>
+      )}
     </div>
   );
 }
@@ -180,31 +256,55 @@ const countWord = (n: number) => NUMBER_WORDS[n] ?? String(n);
 /**
  * Act 2, the Reel. An editorial sequence, not a grid: full-width scenes,
  * vertical strips, vertical cuts beside a wide scene, and offset pairs.
- * Rhythm over uniformity, and the layout composes itself from the data.
+ * Filters narrow it to brand, narrative, or animation work; the layout
+ * recomposes itself from whatever is left.
  */
 export function Reel() {
   const headerRef = useReveal<HTMLElement>();
+  const [kind, setKind] = useState<FilmKind | 'all'>('all');
   const ordered = [...films].sort((a, b) => a.order - b.order);
-  const bands = composeBands(ordered);
+  const shown = kind === 'all' ? ordered : ordered.filter((f) => f.kinds.includes(kind));
+  const bands = composeBands(shown);
   const count = countWord(ordered.length);
 
   return (
     <section id="work" className="relative px-6 md:px-12 lg:px-20 py-24 md:py-40">
-      <header ref={headerRef} className="reveal max-w-[1480px] mx-auto mb-16 md:mb-24">
+      <header ref={headerRef} className="reveal max-w-[1480px] mx-auto mb-12 md:mb-20">
         <p className="slate text-seal">The Reel</p>
         <h2 className="font-display text-display-lg text-bone mt-4 max-w-3xl">
           {count} films, {count.toLowerCase()} different worlds.
         </h2>
         <p className="text-bone-dim text-base md:text-lg max-w-md mt-4 leading-relaxed">
-          Open a scene to watch the film.
+          Hover a scene to play it with sound. Open it to watch full screen.
         </p>
+
+        {/* Filters */}
+        <div role="group" aria-label="Filter the reel" className="flex flex-wrap gap-2 mt-8">
+          {filmKinds.map((k) => {
+            const n = k.kind === 'all' ? ordered.length : ordered.filter((f) => f.kinds.includes(k.kind as FilmKind)).length;
+            const on = kind === k.kind;
+            return (
+              <button
+                key={k.kind}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setKind(k.kind)}
+                className={`slate px-4 py-2 border transition-colors duration-300 ${
+                  on ? 'bg-bone text-ink border-bone' : 'text-bone-dim border-hairline hover:text-bone hover:border-bone/40'
+                }`}
+              >
+                {k.label} <span className={on ? 'text-ink/60' : 'text-bone-dim/60'}>{n}</span>
+              </button>
+            );
+          })}
+        </div>
       </header>
 
-      <div className="max-w-[1480px] mx-auto flex flex-col gap-16 md:gap-24">
+      <div key={kind} className="max-w-[1480px] mx-auto flex flex-col gap-16 md:gap-24">
         {bands.map((band) => {
           const key = band.films.map((f) => f.slug).join('+');
           const scene = (film: Film, wide = false) => (
-            <Scene film={film} index={ordered.indexOf(film)} wide={wide} />
+            <Scene film={film} index={shown.indexOf(film)} wide={wide} />
           );
 
           // Full-width scene, one per viewport
