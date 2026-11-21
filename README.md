@@ -37,7 +37,16 @@ and the site keeps using Web3Forms exactly as before.
 
 ## Video
 
-Full films live in `public/videos/<slug>.mp4`: H.264 High, 1080p where the
+Two files per film:
+
+- `public/previews/play/<slug>.mp4`: a light, full-length rendition (720p wide,
+  540x960 vertical, about 1 to 1.5 Mbps, 2 s keyframes) that plays on hover in
+  the reel. Nothing is downloaded until the pointer is on a card, and the
+  download is dropped 1.5 s after it leaves (the position is kept).
+- `public/videos/<slug>.mp4`: the full-quality film for the watch page, which
+  only starts downloading when play is pressed.
+
+Full films: H.264 High, 1080p where the
 source allows (never upscaled), 30 fps max, AAC 160k, `+faststart`. Short films
 use CRF 19 (max 6 Mbps); films over 75 s are two-pass encoded to fit about
 46 MB. HDR (HLG) sources are tone-mapped to SDR. Posters ship as JPG plus

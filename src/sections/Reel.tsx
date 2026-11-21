@@ -36,49 +36,64 @@ function Poster({ film, slot, eager, hidden }: { film: Film; slot: keyof typeof 
 /**
  * One film, staged as a scene. Slate metadata like a clapperboard, a
  * logline like a synopsis. On desktop, hovering plays the whole film in
- * place, with sound once the browser allows it, and it resumes where it
- * left off. Click opens the watch page at the same moment.
+ * place (a light rendition), with sound once the browser allows it, and it
+ * resumes where it left off. Click opens the full-quality film on the
+ * watch page at the same moment.
  */
 function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean }) {
   const ref = useReveal<HTMLDivElement>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const wantsVideo = useWantsVideo();
-  const [near, setNear] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState({ t: 0, d: 0 });
   const hovering = useRef(false);
+  const resumeAt = useRef(0);
+  const detachTimer = useRef(0);
 
-  // Fetch the film's header (not the film) once the card is close to view
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !wantsVideo) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        setNear(true);
-        io.disconnect();
-      }
-    }, { rootMargin: '600px 0px' });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [ref, wantsVideo]);
+  /*
+   * Nothing downloads until the pointer is on the card. The light play
+   * clip is attached on hover; a second and a half after the pointer
+   * leaves, it is detached so the browser stops buffering, and the
+   * position is kept so the film resumes where it stopped.
+   */
+  const attach = useCallback((v: HTMLVideoElement) => {
+    if (v.getAttribute('src')) return;
+    v.src = film.playClip;
+    const t = resumeAt.current;
+    if (t > 0) v.addEventListener('loadedmetadata', () => (v.currentTime = t), { once: true });
+  }, [film.playClip]);
+
+  const detach = useCallback((v: HTMLVideoElement) => {
+    if (!v.getAttribute('src')) return;
+    resumeAt.current = v.ended ? 0 : v.currentTime;
+    v.removeAttribute('src');
+    v.load();
+  }, []);
+
+  useEffect(() => () => clearTimeout(detachTimer.current), []);
 
   const start = useCallback(async ({ sound = true } = {}) => {
     const v = videoRef.current;
     if (!v || !wantsVideo) return;
     hovering.current = true;
+    clearTimeout(detachTimer.current);
+    attach(v);
     const result = await playFilm(v, { sound });
     if (!hovering.current) return stopFilm(v);
     setMuted(v.muted);
     setPlaying(result !== 'failed');
-  }, [wantsVideo]);
+  }, [wantsVideo, attach]);
 
   const stop = useCallback(() => {
     hovering.current = false;
     const v = videoRef.current;
-    if (v) stopFilm(v);
+    if (!v) return;
+    stopFilm(v);
     setPlaying(false);
-  }, []);
+    clearTimeout(detachTimer.current);
+    detachTimer.current = window.setTimeout(() => !hovering.current && detach(v), 1500);
+  }, [detach]);
 
   // Follows the element itself, so a gesture that unmutes mid-play updates the chip
   const audible = playing && !muted;
@@ -109,15 +124,15 @@ function Scene({ film, index, wide }: { film: Film; index: number; wide: boolean
           {wantsVideo && (
             <video
               ref={videoRef}
-              src={film.fullVideoUrl}
               playsInline
-              preload={near ? 'metadata' : 'none'}
+              preload="none"
               aria-hidden="true"
               tabIndex={-1}
               onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
               onTimeUpdate={(e) => setProgress({ t: e.currentTarget.currentTime, d: e.currentTarget.duration || 0 })}
               onEnded={(e) => {
                 e.currentTarget.currentTime = 0;
+                resumeAt.current = 0;
                 setPlaying(false);
               }}
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
