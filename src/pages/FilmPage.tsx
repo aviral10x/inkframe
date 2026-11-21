@@ -51,7 +51,8 @@ function Player({ film, startAt = 0, autoplay = false }: { film: Film; startAt?:
         ref={videoRef}
         src={film.fullVideoUrl}
         poster={film.thumbnail}
-        preload="metadata"
+        // Nothing downloads until play, unless we arrived mid-film from the reel
+        preload={autoplay ? 'auto' : 'none'}
         controls={started}
         controlsList="nodownload"
         playsInline

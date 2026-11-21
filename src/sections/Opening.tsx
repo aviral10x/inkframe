@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { heroMontage } from '../data/films';
 import { useWantsVideo } from '../hooks/useWantsVideo';
 
@@ -20,9 +20,24 @@ export function Opening() {
   const wantsVideo = useWantsVideo();
   const [videoReady, setVideoReady] = useState(false);
   const [sceneIdx, setSceneIdx] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // The montage only runs while the hero is on screen; scrolled past, it rests
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !wantsVideo) return;
+    const io = new IntersectionObserver(([entry]) => {
+      const v = videoRef.current;
+      if (!v) return;
+      if (entry.isIntersecting) v.play().catch(() => {});
+      else v.pause();
+    });
+    io.observe(section);
+    return () => io.disconnect();
+  }, [wantsVideo]);
 
   return (
-    <section id="top" className="relative min-h-screen overflow-hidden flex flex-col">
+    <section ref={sectionRef} id="top" className="relative min-h-screen overflow-hidden flex flex-col">
       {/* Poster still, the LCP element */}
       <picture>
         <source

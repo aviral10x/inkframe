@@ -20,6 +20,8 @@ export type Film = {
   thumbnail: string;
   previewClip: string;
   fullVideoUrl: string;
+  /** Light full-length rendition for hover playback in the reel (720p wide / 540p vertical) */
+  playClip: string;
   featured: boolean;
   /** 9:16 films: staged vertical in the reel, letterboxed on the watch page */
   portrait?: boolean;
@@ -31,7 +33,8 @@ export type Film = {
  * Assets follow the basename convention:
  *   /previews/<slug>.jpg  poster still
  *   /previews/<slug>.mp4  muted hover loop, keep under 2MB
- *   /videos/<slug>.mp4    full film
+ *   /videos/<slug>.mp4    full film, 1080p where the source allows (watch page)
+ *   /previews/play/<slug>.mp4  the same film, light, for hover playback in the reel
  */
 export const films: Film[] = [
   {
@@ -46,6 +49,7 @@ export const films: Film[] = [
     thumbnail: '/previews/alphas-deal.jpg',
     previewClip: '/previews/alphas-deal.mp4',
     fullVideoUrl: '/videos/alphas-deal.mp4',
+    playClip: '/previews/play/alphas-deal.mp4',
     featured: true,
     order: 1,
   },
@@ -61,6 +65,7 @@ export const films: Film[] = [
     thumbnail: '/previews/aura-trailer.jpg',
     previewClip: '/previews/aura-trailer.mp4',
     fullVideoUrl: '/videos/aura-trailer.mp4',
+    playClip: '/previews/play/aura-trailer.mp4',
     featured: true,
     order: 2,
   },
@@ -76,6 +81,7 @@ export const films: Film[] = [
     thumbnail: '/previews/liquid-death.jpg',
     previewClip: '/previews/liquid-death.mp4',
     fullVideoUrl: '/videos/liquid-death.mp4',
+    playClip: '/previews/play/liquid-death.mp4',
     featured: false,
     portrait: true,
     order: 3,
@@ -92,6 +98,7 @@ export const films: Film[] = [
     thumbnail: '/previews/stanley.jpg',
     previewClip: '/previews/stanley.mp4',
     fullVideoUrl: '/videos/stanley.mp4',
+    playClip: '/previews/play/stanley.mp4',
     featured: false,
     portrait: true,
     order: 4,
@@ -108,6 +115,7 @@ export const films: Film[] = [
     thumbnail: '/previews/starbucks.jpg',
     previewClip: '/previews/starbucks.mp4',
     fullVideoUrl: '/videos/starbucks.mp4',
+    playClip: '/previews/play/starbucks.mp4',
     featured: false,
     portrait: true,
     order: 5,
@@ -124,6 +132,7 @@ export const films: Film[] = [
     thumbnail: '/previews/caneza.jpg',
     previewClip: '/previews/caneza.mp4',
     fullVideoUrl: '/videos/caneza.mp4',
+    playClip: '/previews/play/caneza.mp4',
     featured: false,
     order: 6,
   },
@@ -139,6 +148,7 @@ export const films: Film[] = [
     thumbnail: '/previews/bacca-buchi.jpg',
     previewClip: '/previews/bacca-buchi.mp4',
     fullVideoUrl: '/videos/bacca-buchi.mp4',
+    playClip: '/previews/play/bacca-buchi.mp4',
     featured: false,
     portrait: true,
     order: 7,
@@ -155,6 +165,7 @@ export const films: Film[] = [
     thumbnail: '/previews/the-last-happy-night.jpg',
     previewClip: '/previews/the-last-happy-night.mp4',
     fullVideoUrl: '/videos/the-last-happy-night.mp4',
+    playClip: '/previews/play/the-last-happy-night.mp4',
     featured: false,
     portrait: true,
     order: 8,
@@ -171,6 +182,7 @@ export const films: Film[] = [
     thumbnail: '/previews/first-light.jpg',
     previewClip: '/previews/first-light.mp4',
     fullVideoUrl: '/videos/first-light.mp4',
+    playClip: '/previews/play/first-light.mp4',
     featured: false,
     portrait: true,
     order: 9,
@@ -187,6 +199,7 @@ export const films: Film[] = [
     thumbnail: '/previews/zer0.jpg',
     previewClip: '/previews/zer0.mp4',
     fullVideoUrl: '/videos/zer0.mp4',
+    playClip: '/previews/play/zer0.mp4',
     featured: false,
     portrait: true,
     order: 10,
@@ -203,6 +216,7 @@ export const films: Film[] = [
     thumbnail: '/previews/the-residence.jpg',
     previewClip: '/previews/the-residence.mp4',
     fullVideoUrl: '/videos/the-residence.mp4',
+    playClip: '/previews/play/the-residence.mp4',
     featured: false,
     order: 11,
   },
@@ -218,6 +232,7 @@ export const films: Film[] = [
     thumbnail: '/previews/kaizen-pilates.jpg',
     previewClip: '/previews/kaizen-pilates.mp4',
     fullVideoUrl: '/videos/kaizen-pilates.mp4',
+    playClip: '/previews/play/kaizen-pilates.mp4',
     featured: false,
     order: 12,
   },
@@ -233,6 +248,7 @@ export const films: Film[] = [
     thumbnail: '/previews/drools.jpg',
     previewClip: '/previews/drools.mp4',
     fullVideoUrl: '/videos/drools.mp4',
+    playClip: '/previews/play/drools.mp4',
     featured: false,
     portrait: true,
     order: 13,
@@ -249,6 +265,7 @@ export const films: Film[] = [
     thumbnail: '/previews/aura-and-the-dragon.jpg',
     previewClip: '/previews/aura-and-the-dragon.mp4',
     fullVideoUrl: '/videos/aura-and-the-dragon.mp4',
+    playClip: '/previews/play/aura-and-the-dragon.mp4',
     featured: false,
     order: 14,
   },
@@ -264,6 +281,7 @@ export const films: Film[] = [
     thumbnail: '/previews/ferrari-concept.jpg',
     previewClip: '/previews/ferrari-concept.mp4',
     fullVideoUrl: '/videos/ferrari-concept.mp4',
+    playClip: '/previews/play/ferrari-concept.mp4',
     featured: false,
     order: 15,
   },
@@ -279,6 +297,7 @@ export const films: Film[] = [
     thumbnail: '/previews/game-intro.jpg',
     previewClip: '/previews/game-intro.mp4',
     fullVideoUrl: '/videos/game-intro.mp4',
+    playClip: '/previews/play/game-intro.mp4',
     featured: false,
     order: 16,
   },
@@ -294,6 +313,7 @@ export const films: Film[] = [
     thumbnail: '/previews/the-aftermath.jpg',
     previewClip: '/previews/the-aftermath.mp4',
     fullVideoUrl: '/videos/the-aftermath.mp4',
+    playClip: '/previews/play/the-aftermath.mp4',
     featured: false,
     order: 17,
   },
@@ -309,6 +329,7 @@ export const films: Film[] = [
     thumbnail: '/previews/theft.jpg',
     previewClip: '/previews/theft.mp4',
     fullVideoUrl: '/videos/theft.mp4',
+    playClip: '/previews/play/theft.mp4',
     featured: false,
     order: 18,
   },
